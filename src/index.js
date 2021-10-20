@@ -1,4 +1,6 @@
 //external dependencies
+
+const {access, constants} = require('fs');
 const path = require("path");
 const crypto = require("crypto");
 const {validate} = require('schema-utils');
@@ -25,7 +27,8 @@ class CopyAdvancedPlugin {
     };
     // Any options should be passed in the constructor of your plugin,
     // (this is a public API of your plugin).
-    constructor(options = []) {
+    constructor(options = [])
+    {
         validate(schema, options, {
             name: "Copy Advanced Plugin",
             baseDataPath: "options",
@@ -40,7 +43,8 @@ class CopyAdvancedPlugin {
         this.options = {...CopyAdvancedPlugin.defaultOptions, ...options};
     }
 
-    static async createSnapshot(compilation, startTime, dependency) {
+    static async createSnapshot(compilation, startTime, dependency)
+    {
         // eslint-disable-next-line consistent-return
         return new Promise((resolve, reject) => {
             compilation.fileSystemInfo.createSnapshot(
@@ -52,37 +56,37 @@ class CopyAdvancedPlugin {
                 undefined,
                 null,
                 (error, snapshot) => {
-                    if (error) {
-                        reject(error);
+                if (error) {
+                    reject(error);
 
-                        return;
-                    }
-
-                    resolve(snapshot);
+                    return;
+                }
+                resolve(snapshot);
                 }
             );
         });
     }
 
-    static async checkSnapshotValid(compilation, snapshot) {
+    static async checkSnapshotValid(compilation, snapshot)
+    {
         // eslint-disable-next-line consistent-return
         return new Promise((resolve, reject) => {
             compilation.fileSystemInfo.checkSnapshotValid(
                 snapshot,
                 (error, isValid) => {
-                    if (error) {
-                        reject(error);
+                if (error) {
+                    reject(error);
 
-                        return;
-                    }
-
-                    resolve(isValid);
+                    return;
+                }
+                resolve(isValid);
                 }
             );
         });
     }
 
-    static getContentHash(compiler, compilation, source) {
+    static getContentHash(compiler, compilation, source)
+    {
         const {outputOptions} = compilation;
         const {hashDigest, hashDigestLength, hashFunction, hashSalt} =
             outputOptions;
@@ -111,20 +115,20 @@ class CopyAdvancedPlugin {
         // RawSource is one of the "sources" classes that should be used
         // to represent asset sources in compilation.
         const {RawSource} = compiler.webpack.sources;
-        console.log(RawSource)
-        console.log(inputPattern)
-        console.log(typeof inputPattern)
+        //console.log(RawSource)
+        //console.log(inputPattern)
+        //console.log(typeof inputPattern)
 
         // Validate type of inputPattern (individual pattern object)
-        const pattern = typeof inputPattern === "string" ? {from: inputPattern} : {...inputPattern};
+        const pattern = typeof inputPattern === "string" ? {from : inputPattern} : {...inputPattern};
         pattern.fromOrigin = pattern.from;
         pattern.from = path.normalize(pattern.from);
 
-        console.log(pattern.from)
+        //console.log(pattern.from)
 
         pattern.context = typeof pattern.context === "undefined" ? compiler.context : path.isAbsolute(pattern.context) ? pattern.context : path.join(compiler.context, pattern.context);
 
-        console.log(pattern.context)
+        //console.log(pattern.context)
 
         logger.log(
             `Starting to process a pattern from '${pattern.from}' using '${pattern.context}' context`
@@ -136,7 +140,7 @@ class CopyAdvancedPlugin {
             `Getting stats for '${pattern.absoluteFrom}'...`
         );
 
-        console.log(pattern.absoluteFrom)
+        //console.log(pattern.absoluteFrom)
 
 
         const {inputFileSystem} = compiler;
@@ -152,7 +156,7 @@ class CopyAdvancedPlugin {
             // Nothing
         }
 
-        console.log(stats)
+        //console.log(stats)
 
 
         if (typeof stats === 'object') {
@@ -177,7 +181,7 @@ class CopyAdvancedPlugin {
         pattern.globOptions.fs = inputFileSystem;
 
 
-        console.log(pattern.fromType)
+        //console.log(pattern.fromType)
 
 
 
@@ -185,8 +189,18 @@ class CopyAdvancedPlugin {
 
         switch (pattern.fromType) {
             case "dir":
+                console.log('absolute from')
                 console.log(pattern.absoluteFrom)
+                console.log('normalize path')
                 console.log(normalizePath(path.resolve(pattern.absoluteFrom)))
+
+                try {
+                    access(normalizePath(path.resolve(pattern.absoluteFrom)), constants.F_OK, (err) => {
+                        console.log(`${normalizePath(path.resolve(pattern.absoluteFrom))} ${err ? 'does not exist' : 'exists'}`);
+                    });
+                } catch (e) {
+                    console.log(e)
+                }
 
                 compilation.contextDependencies.add(pattern.absoluteFrom);
                 logger.debug(`Added '${pattern.absoluteFrom}' as a context dependency`);
@@ -239,7 +253,7 @@ class CopyAdvancedPlugin {
                         pattern.fromOrigin
                     );
                 /* eslint-enable no-param-reassign */
-            }
+                }
         }
 
 
@@ -255,11 +269,11 @@ class CopyAdvancedPlugin {
             return;
         }
 
-        console.log('viewing path')
-        console.log(pattern.glob)
-        console.log(pattern.globOptions)
-        console.log(paths)
-        console.log(paths.length)
+        // console.log('viewing path')
+        // console.log(pattern.glob)
+        // console.log(pattern.globOptions)
+        // console.log(paths)
+        // console.log(paths.length)
 
         if (paths.length === 0) {
             if (pattern.noErrorOnMissing) {
@@ -280,7 +294,7 @@ class CopyAdvancedPlugin {
 
         const filteredPaths = (
             await Promise.all(
-                paths.map(async (item) => {
+                paths.map(async(item) => {
                     // Exclude directories
                     if (!item.dirent.isFile()) {
                         return false;
@@ -328,7 +342,7 @@ class CopyAdvancedPlugin {
         }
 
         const files = await Promise.all(
-            filteredPaths.map(async (item) => {
+            filteredPaths.map(async(item) => {
                 const from = item.path;
 
                 logger.debug(`Found '${from}'`);
@@ -338,7 +352,7 @@ class CopyAdvancedPlugin {
 
                 pattern.to =
                     typeof pattern.to === "function"
-                        ? await pattern.to({context: pattern.context, absoluteFilename})
+                        ? await pattern.to({context : pattern.context, absoluteFilename})
                         : path.normalize(
                             typeof pattern.to !== "undefined" ? pattern.to : ""
                         );
@@ -359,9 +373,9 @@ class CopyAdvancedPlugin {
                 const relativeFrom  = path.relative(pattern.context, absoluteFilename);
                 let filename        = toType === "dir" ? path.join(pattern.to, relativeFrom) : pattern.to;
 
-                if (path.isAbsolute(filename)) {
-                    filename = path.relative(compiler.options.output.path, filename);
-                }
+            if (path.isAbsolute(filename)) {
+                filename = path.relative(compiler.options.output.path, filename);
+            }
 
                 logger.log(`Determined that '${from}' should write to '${filename}'`);
 
@@ -381,7 +395,7 @@ class CopyAdvancedPlugin {
 
         try {
             assets = await Promise.all(
-                files.map(async (file) => {
+                files.map(async(file) => {
                     const {absoluteFilename, sourceFilename, filename, toType} = file;
                     const info = typeof pattern.info === "function" ? pattern.info(file) || {} : pattern.info || {};
                     const result = {
@@ -405,7 +419,7 @@ class CopyAdvancedPlugin {
 
                     try {
                         cacheEntry = await cache.getPromise(
-                            `${sourceFilename}|${index}`,
+                            `${sourceFilename} | ${index}`,
                             null
                         );
                     } catch (error) {
@@ -485,7 +499,7 @@ class CopyAdvancedPlugin {
                             logger.debug(`Storing cache for '${absoluteFilename}'...`);
 
                             try {
-                                await cache.storePromise(`${sourceFilename}|${index}`, null, {
+                                await cache.storePromise(`${sourceFilename} | ${index}`, null, {
                                     source: result.source,
                                     snapshot,
                                 });
@@ -502,7 +516,7 @@ class CopyAdvancedPlugin {
                     if (pattern.transform) {
                         const transform =
                             typeof pattern.transform === "function"
-                                ? {transformer: pattern.transform}
+                                ? {transformer : pattern.transform}
                                 : pattern.transform;
 
                         if (transform.transformer) {
@@ -521,7 +535,7 @@ class CopyAdvancedPlugin {
                                         .digest("hex"),
                                     index,
                                 };
-                                const cacheKeys = `transform|${serialize(
+                                const cacheKeys = `transform | ${serialize(
                                     typeof transform.cache.keys === "function"
                                         ? await transform.cache.keys(
                                             defaultCacheKeys,
@@ -591,11 +605,11 @@ class CopyAdvancedPlugin {
                                 path.relative(pattern.context, absoluteFilename)
                             ),
                             contentHash,
-                            chunk: {
-                                name,
-                                id: result.sourceFilename,
-                                hash: contentHash,
-                                contentHash,
+                        chunk: {
+                            name,
+                            id: result.sourceFilename,
+                            hash: contentHash,
+                            contentHash,
                             },
                         };
                         const {path: interpolatedFilename, info: assetInfo} =
@@ -630,10 +644,11 @@ class CopyAdvancedPlugin {
     }
 
     // Define `apply` as its prototype method which is supplied with compiler as its argument
-    apply(compiler) {
+    apply(compiler)
+    {
         const pluginName = this.constructor.name;
         const limit = Limit(this.options.concurrency || 100);
-        console.log(pluginName)
+        //console.log(pluginName)
 
 
         // webpack module instance can be accessed from the compiler object,
@@ -663,9 +678,9 @@ class CopyAdvancedPlugin {
                     // that all assets were already added to the compilation by other plugins.
                     stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
                 },
-                async (assets) => {
-                    logger.log('Starting to add additional assets...');
-                    // "assets" is an object that contains all assets
+                async(assets) => {
+                logger.log('Starting to add additional assets...');
+                // "assets" is an object that contains all assets
                     // in the compilation, the keys of the object are pathnames of the assets
                     // and the values are file sources.
 
@@ -686,12 +701,12 @@ class CopyAdvancedPlugin {
                     // );
                     //
                     let assetsMap = new Map();
-                    await Promise.all(
+                await Promise.all(
                         this.patterns.map((item, index) => {
-                            console.log(item)
-                            console.log(index)
+                            //console.log(item)
+                           // console.log(index)
 
-                            limit(async () => {
+                            limit(async() => {
                                 let assets;
 
                                 try {
@@ -703,7 +718,7 @@ class CopyAdvancedPlugin {
                                         item,
                                         index
                                     );
-                                    console.log(assets)
+                                    //console.log(assets)
                                 } catch (error) {
                                     compilation.errors.push(error);
 
@@ -712,11 +727,8 @@ class CopyAdvancedPlugin {
                             })
                         })
                     );
-
-
-                    const assetsAll = [...assetsMap.entries()].sort((a, b) => a[0] - b[0]);
-
-                    // Avoid writing assets inside `p-limit`, because it creates concurrency.
+                const assetsAll = [...assetsMap.entries()].sort((a, b) => a[0] - b[0]);
+                // Avoid writing assets inside `p-limit`, because it creates concurrency.
                     // It could potentially lead to an error - 'Multiple assets emit different content to the same filename'
                     assetsAll
                         .reduce((acc, val) => acc.concat(val[1]), [])
@@ -737,7 +749,8 @@ class CopyAdvancedPlugin {
                                     const info = {copied: true, sourceFilename};
 
                                     logger.log(
-                                        `force updating '${filename}' from '${absoluteFilename}' to compilation assets, because it already exists...`
+                                        `force updating '${filename}' from '${absoluteFilename}' to compilation assets,
+                                        because it already exists...`
                                     );
 
                                     compilation.updateAsset(filename, source, {
@@ -746,14 +759,16 @@ class CopyAdvancedPlugin {
                                     });
 
                                     logger.log(
-                                        `force updated '${filename}' from '${absoluteFilename}' to compilation assets, because it already exists`
+                                        `force updated '${filename}' from '${absoluteFilename}' to compilation assets,
+                                        because it already exists`
                                     );
 
                                     return;
                                 }
 
                                 logger.log(
-                                    `skip adding '${filename}' from '${absoluteFilename}' to compilation assets, because it already exists`
+                                    `skip adding '${filename}' from '${absoluteFilename}' to compilation assets,
+                                    because it already exists`
                                 );
 
                                 return;
@@ -774,23 +789,23 @@ class CopyAdvancedPlugin {
                                 `written '${filename}' from '${absoluteFilename}' to compilation assets`
                             );
                         });
+                logger.log("finished to adding additional assets");
+                //callback();
+                }
+            );
 
-                    logger.log("finished to adding additional assets");
-
-                    //callback();
-                });
-
-            if (compilation.hooks.statsPrinter) {
-                compilation.hooks.statsPrinter.tap(pluginName, (stats) => {
-                    stats.hooks.print
-                        .for("asset.info.copied")
-                        .tap("copy-advanced-webpack-plugin",
-                            (copied, {green, formatFlag}) =>
-                            // eslint-disable-next-line no-undefined
-                            copied ? green(formatFlag("copied")) : undefined
-                        );
-                });
-            }
+        if (compilation.hooks.statsPrinter) {
+            compilation.hooks.statsPrinter.tap(pluginName, (stats) => {
+                stats.hooks.print
+                    .for("asset.info.copied")
+                    .tap(
+                        "copy-advanced-webpack-plugin",
+                        (copied, {green, formatFlag}) =>
+                        // eslint-disable-next-line no-undefined
+                        copied ? green(formatFlag("copied")) : undefined
+                    );
+            });
+        }
         });
     }
 }
