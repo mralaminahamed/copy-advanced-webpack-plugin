@@ -9,6 +9,7 @@ const schema = require('./options.json');
 const {stat, readFile} = require("./utils/promisify");
 const {version} = require("../package.json");
 const globParent = require('./utils/glob-parent');
+const serialize = require('./utils/serialize-javascript');
 const Limit = require('./utils/limit')
 const globby = require("globby");
 const crypto = require("crypto");
@@ -178,6 +179,8 @@ class CopyAdvancedPlugin {
 
         console.log(pattern.fromType)
 
+
+
         //we should do something here
 
         switch (pattern.fromType) {
@@ -248,6 +251,12 @@ class CopyAdvancedPlugin {
 
             return;
         }
+
+        console.log('viewing path')
+        console.log(pattern.glob)
+        console.log(pattern.globOptions)
+        console.log(paths)
+        console.log(paths.length)
 
         if (paths.length === 0) {
             if (pattern.noErrorOnMissing) {
