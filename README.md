@@ -1194,7 +1194,7 @@ Please take a moment to read our contributing guidelines if you haven't yet done
 [node]: https://img.shields.io/node/v/copy-advanced-webpack-plugin.svg
 [node-url]: https://nodejs.org
 
-[deps]: https://david-dm.org/mralaminahamed/copy-advanced-webpack-plugin.svg
+[deps]: https://img.shields.io/librariesio/github/mralaminahamed/copy-advanced-webpack-plugin
 [deps-url]: https://david-dm.org/mralaminahamed/copy-advanced-webpack-plugin
 [tests]: https://github.com/mralaminahamed/copy-advanced-webpack-plugin/workflows/copy-advanced-webpack-plugin/badge.svg
 [tests-url]: https://github.com/mralaminahamed/copy-advanced-webpack-plugin/actions
