@@ -1,8 +1,10 @@
 //external dependencies
 const path = require("path");
+const crypto = require("crypto");
 const {validate} = require('schema-utils');
 const normalizePath = require('normalize-path');
 const fastGlob = require('fast-glob');
+const globby = require("globby");
 
 //internal dependencies
 const schema = require('./options.json');
@@ -11,8 +13,6 @@ const {version} = require("../package.json");
 const globParent = require('./utils/glob-parent');
 const serialize = require('./utils/serialize-javascript');
 const Limit = require('./utils/limit')
-const globby = require("globby");
-const crypto = require("crypto");
 
 //Internal variables
 const template = /\[\\*([\w:]+)\\*\]/i;
@@ -185,6 +185,9 @@ class CopyAdvancedPlugin {
 
         switch (pattern.fromType) {
             case "dir":
+                console.log(pattern.absoluteFrom)
+                console.log(normalizePath(path.resolve(pattern.absoluteFrom)))
+
                 compilation.contextDependencies.add(pattern.absoluteFrom);
                 logger.debug(`Added '${pattern.absoluteFrom}' as a context dependency`);
                 pattern.context = pattern.absoluteFrom;
