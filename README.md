@@ -60,11 +60,11 @@ The plugin's signature:
 **webpack.config.js**
 
 ```js
-const CopyPlugin = require("copy-webpack-plugin");
+const CopyAdvancedPlugin = require("copy-advanced-webpack-plugin");
 
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         { from: "source", to: "dest" },
         { from: "other", to: "public" },
@@ -112,7 +112,7 @@ Glob can only be a `string`.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         "relative/path/to/file.ext",
         "relative/path/to/dir",
@@ -140,7 +140,7 @@ If you define `from` as absolute file path or absolute folder path on `Windows`,
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, "file.txt"),
@@ -157,7 +157,7 @@ See [fast-glob manual](https://github.com/mrmlnc/fast-glob#how-to-write-patterns
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           // If absolute path is a `glob` we replace backslashes with forward slashes, because only forward slashes can be used in the `glob`
@@ -193,7 +193,7 @@ Output path.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "**/*",
@@ -226,7 +226,7 @@ Allows to modify the writing path.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -245,7 +245,7 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -275,7 +275,7 @@ A path that determines how to interpret the `from` path.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.txt",
@@ -315,7 +315,7 @@ To exclude files from the selection, you should use [globOptions.ignore option](
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "public/**/*",
@@ -345,7 +345,7 @@ const fs = require("fs").promise;
 
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "public/**/*",
@@ -389,7 +389,7 @@ We try to automatically determine the `type` so you most likely do not need this
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "path/to/file.txt",
@@ -409,7 +409,7 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "path/to/file.txt",
@@ -429,7 +429,7 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/",
@@ -454,7 +454,7 @@ Overwrites files already in `compilation.assets` (usually added by other plugins
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/**/*",
@@ -481,7 +481,7 @@ To overwrite files, the [`force`](#force) option must be enabled.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         // Copied second and will overwrite "dir_2/file.txt"
         {
@@ -516,7 +516,7 @@ Allows to modify the file contents.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -550,7 +550,7 @@ Default: `undefined`
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -574,7 +574,7 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -610,7 +610,7 @@ Enables/Disable `transform` caching.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -637,7 +637,7 @@ Enables `transform` caching and setup cache directory and invalidation keys.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -671,7 +671,7 @@ Simple function:
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -706,7 +706,7 @@ Async function:
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/*.png",
@@ -748,7 +748,7 @@ Allows you to modify the contents of multiple files and save the result to one f
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/**/*.txt",
@@ -783,7 +783,7 @@ Doesn't generate an error on missing file(s).
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, "missing-file.txt"),
@@ -807,7 +807,7 @@ Allows to add assets info.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         "relative/path/to/file.ext",
         {
@@ -826,7 +826,7 @@ module.exports = {
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         "relative/path/to/file.ext",
         {
@@ -855,7 +855,7 @@ limits the number of simultaneous requests to fs
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [...patterns],
       options: { concurrency: 50 },
     }),
@@ -883,7 +883,7 @@ Everything that you specify in `from` will be included in the result:
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/directory-nested/**/*",
@@ -908,7 +908,7 @@ If you want only content `src/directory-nested/`, you should only indicate `glob
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "**/*",
@@ -934,7 +934,7 @@ nested-file.txt
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: path.resolve(__dirname, "src", "directory-nested"),
@@ -959,7 +959,7 @@ Technically, this is `**/*` with a predefined context equal to the specified dir
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "**/*",
@@ -983,7 +983,7 @@ nested-file.txt
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: path.resolve(
@@ -1012,7 +1012,7 @@ Technically, this is a filename with a predefined context equal to `path.dirname
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "nested-file.txt",
@@ -1037,7 +1037,7 @@ nested-file.txt
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: path.posix.join(
@@ -1070,7 +1070,7 @@ Removes all directory references and only copies file names.
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: "src/**/*",
@@ -1097,7 +1097,7 @@ nested-file.txt
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           // When copying files starting with a dot, must specify the toType option
@@ -1131,7 +1131,7 @@ Useful if you need to simply copy `*.js` files to destination "as is" without ev
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         "relative/path/to/file.ext",
         {
@@ -1155,7 +1155,7 @@ To avoid this, should explicitly specify where to copy the files from using `req
 ```js
 module.exports = {
   plugins: [
-    new CopyPlugin({
+    new CopyAdvancedPlugin({
       patterns: [
         {
           from: `${path.dirname(
