@@ -622,6 +622,25 @@ class CopyAdvancedPlugin {
             const logger = compilation.getLogger(pluginFullName);
             const cache = compilation.getCache(pluginWebpackName);
 
+
+            compiler.hooks.assetEmitted.tap(
+                pluginName,
+                (file, { content, source, outputPath, compilation, targetPath }) => {
+                    if(/css/.test(file)){
+                        console.log('css file found')
+                        console.log(file); // <Buffer 66 6f 6f 62 61 72>
+                        console.log('output path: ' + outputPath); // <Buffer 66 6f 6f 62 61 72>
+                        console.log('target path: ' + targetPath); // <Buffer 66 6f 6f 62 61 72>
+                    }
+
+                    console.log('filename: ' + file); // <Buffer 66 6f 6f 62 61 72>
+                    console.log(content); // <Buffer 66 6f 6f 62 61 72>
+                    console.log('output path: ' + outputPath); // <Buffer 66 6f 6f 62 61 72>
+                    console.log('target path: ' + targetPath); // <Buffer 66 6f 6f 62 61 72>
+                }
+            );
+
+
             compilation.hooks.processAssets.tapAsync(
                 {
                     name: pluginFullName,
