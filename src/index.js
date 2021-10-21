@@ -614,9 +614,9 @@ class CopyAdvancedPlugin {
 
     apply(compiler) {
         const pluginName            = this.constructor.name;
-        const pluginWebpackName   = 'CopyAdvancedWebpackPlugin';
+        const pluginWebpackName     = 'CopyAdvancedWebpackPlugin';
         const pluginFullName        = 'copy-advanced-webpack-plugin';
-        const limit = Limit(this.options.concurrency || 100);
+        const limit                 = Limit(this.options.concurrency || 100);
 
         compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
             const logger = compilation.getLogger(pluginFullName);
