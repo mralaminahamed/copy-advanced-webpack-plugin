@@ -5,7 +5,8 @@
  * Released under the MIT License.
  */
 
-const isExtGlob = require('./is-extglob');
+import isExtGlob from './is-extglob';
+
 const chars = {'{': '}', '(': ')', '[': ']'};
 const strictRegex = /\\(.)|(^!|\*|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\))/;
 const relaxedRegex = /\\(.)|(^!|[*?{}()[\]]|\(\?)/;
@@ -28,6 +29,7 @@ module.exports = function isGlob(str, options)
         regex = relaxedRegex;
     }
 
+    // eslint-disable-next-line no-cond-assign
     while ((match = regex.exec(str))) {
         if (match[2]) {
             return true;
@@ -36,6 +38,7 @@ module.exports = function isGlob(str, options)
 
         // if an open bracket/brace/paren is escaped,
         // set the index to the next closing character
+        // eslint-disable-next-line prefer-destructuring
         const open = match[1];
         const close = open ? chars[open] : null;
         if (open && close) {
@@ -45,6 +48,7 @@ module.exports = function isGlob(str, options)
             }
         }
 
+        // eslint-disable-next-line no-param-reassign
         str = str.slice(idx);
     }
     return false;

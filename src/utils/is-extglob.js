@@ -12,10 +12,12 @@ module.exports = function isExtGlob(str)
     }
 
     let match;
+    // eslint-disable-next-line no-cond-assign
     while ((match = /(\\).|([@?!+*]\(.*\))/g.exec(str))) {
         if (match[2]) {
             return true;
         }
+        // eslint-disable-next-line no-param-reassign
         str = str.slice(match.index + match[0].length);
     }
 

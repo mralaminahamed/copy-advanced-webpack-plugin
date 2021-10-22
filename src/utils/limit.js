@@ -1,4 +1,3 @@
-'use strict';
 const Queue = require('./queue');
 
 const limit = concurrency => {
@@ -10,6 +9,7 @@ const limit = concurrency => {
     let activeCount = 0;
 
     const next = () => {
+        // eslint-disable-next-line no-plusplus
         activeCount--;
 
         if (queue.size > 0) {
@@ -18,6 +18,7 @@ const limit = concurrency => {
     };
 
     const run = async(fn, resolve, ...args) => {
+        // eslint-disable-next-line no-plusplus
         activeCount++;
 
         const result = (async() => fn(...args))();
@@ -26,8 +27,10 @@ const limit = concurrency => {
 
         try {
             await result;
-        } catch {}
-
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e)
+        }
         next();
     };
 
@@ -68,4 +71,4 @@ const limit = concurrency => {
     return generator;
 };
 
-module.exports = limit;
+export default limit;
