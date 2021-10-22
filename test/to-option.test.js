@@ -867,11 +867,11 @@ describe("to option", () => {
   it("should process template string", (done) => {
         runEmit({
             expectedAssetKeys: [
-            "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e-47e8bdc316eff74b2d6e.txt--[unknown]",
+            "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e.txt--[unknown]",
             ],
             patterns: [{
                 from: "directory/directoryfile.*",
-                to: "[path][base]-new-[name][ext].[contenthash].[hash]-[fullhash][ext]--[unknown]",},
+                to: "[path][base]-new-[name][ext].[contenthash].[fullhash][ext]--[unknown]",},
             ],
         })
       .then(done)
