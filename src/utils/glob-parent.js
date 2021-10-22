@@ -18,38 +18,35 @@ const escaped = /\\([!*?|[\](){}])/g;
  */
 export default function globParent(str, opts)
 {
+    let pathString = '';
     const options = Object.assign({flipBackslashes: true}, opts);
 
     // flip windows path separators
     if (options.flipBackslashes && isWin32 && str.indexOf(slash) < 0) {
-        // eslint-disable-next-line no-param-reassign
-        str = str.replace(backslash, slash);
+        pathString = str.replace(backslash, slash);
     }
 
     // special case for strings ending in enclosure containing path separator
-    if (isEnclosure(str)) {
-        // eslint-disable-next-line no-param-reassign
-        str += slash;
+    if (isEnclosure(pathString)) {
+        pathString += slash;
     }
 
     // preserves full path in case of trailing path separator
-    // eslint-disable-next-line no-param-reassign
-    str += 'a';
+    pathString += 'a';
 
     // remove path parts that are globby
     do {
-        // eslint-disable-next-line no-param-reassign
-        str = pathPosixDirname(str);
-    } while (isGlob(str) || globby.test(str));
+        pathString = pathPosixDirname(pathString);
+    } while (isGlob(pathString) || globby.test(pathString));
 
     // remove escape chars and return result
-    return str.replace(escaped, '$1');
+    return pathString.replace(escaped, '$1');
 }
 
-function isEnclosure(str)
+function isEnclosure(path)
 {
-    const lastChar = str.slice(-1);
     let enclosureStart;
+    const lastChar = path.slice(-1);
 
     switch (lastChar) {
         case '}':
@@ -62,10 +59,10 @@ function isEnclosure(str)
             return false;
     }
 
-    const foundIndex = str.indexOf(enclosureStart);
+    const foundIndex = path.indexOf(enclosureStart);
     if (foundIndex < 0) {
         return false;
     }
 
-    return str.slice(foundIndex + 1, -1).includes(slash);
+    return path.slice(foundIndex + 1, -1).includes(slash);
 }

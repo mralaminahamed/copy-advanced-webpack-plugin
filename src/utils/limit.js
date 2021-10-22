@@ -1,6 +1,7 @@
-const Queue = require('./queue');
+import Queue from './queue';
 
-const limit = concurrency => {
+export default function limit(concurrency)
+{
     if (!((Number.isInteger(concurrency) || concurrency === Infinity) && concurrency > 0)) {
         throw new TypeError('Expected `concurrency` to be a number from 1 and up');
     }
@@ -70,5 +71,3 @@ const limit = concurrency => {
 
     return generator;
 };
-
-export default limit;

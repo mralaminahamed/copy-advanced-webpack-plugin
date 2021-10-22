@@ -5,19 +5,19 @@
  * Released under the MIT License.
  */
 
-import isExtGlob from './is-extglob';
+import isExtGlob from './is-ext-glob';
 
 const chars = {'{': '}', '(': ')', '[': ']'};
 const strictRegex = /\\(.)|(^!|\*|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\))/;
 const relaxedRegex = /\\(.)|(^!|[*?{}()[\]]|\(\?)/;
 
-module.exports = function isGlob(str, options)
+export default function isGlob(path, options)
 {
-    if (typeof str !== 'string' || str === '') {
+    if (typeof path !== 'string' || path === '') {
         return false;
     }
 
-    if (isExtGlob(str)) {
+    if (isExtGlob(path)) {
         return true;
     }
 
@@ -30,7 +30,7 @@ module.exports = function isGlob(str, options)
     }
 
     // eslint-disable-next-line no-cond-assign
-    while ((match = regex.exec(str))) {
+    while ((match = regex.exec(path))) {
         if (match[2]) {
             return true;
         }
@@ -42,14 +42,14 @@ module.exports = function isGlob(str, options)
         const open = match[1];
         const close = open ? chars[open] : null;
         if (open && close) {
-            const n = str.indexOf(close, idx);
+            const n = path.indexOf(close, idx);
             if (n !== -1) {
                 idx = n + 1;
             }
         }
 
         // eslint-disable-next-line no-param-reassign
-        str = str.slice(idx);
+        path = path.slice(idx);
     }
     return false;
 };

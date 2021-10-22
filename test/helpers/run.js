@@ -82,10 +82,10 @@ function run(opts)
                 throw compilation.warnings[0];
             }
 
-            const enryPoint = path.resolve(__dirname, "enter.js");
+            const entryPoint = path.resolve(__dirname, "enter.js");
 
-            if (compilation.fileDependencies.has(enryPoint)) {
-                compilation.fileDependencies.delete(enryPoint);
+            if (compilation.fileDependencies.has(entryPoint)) {
+                compilation.fileDependencies.delete(entryPoint);
             }
 
             resolve({ compilation, compiler, stats });
@@ -143,7 +143,6 @@ function runForce(opts)
 {
   // eslint-disable-next-line no-param-reassign
     opts.compiler = getCompiler();
-
     new PreCopyPlugin({ options: opts }).apply(opts.compiler);
 
     return runEmit(opts).then(() => {});

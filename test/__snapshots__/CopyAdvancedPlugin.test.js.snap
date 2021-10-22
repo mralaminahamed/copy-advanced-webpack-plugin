@@ -279,7 +279,7 @@ Object {
     "'to' option '.' determinated as 'dir'",
     "'to' option '.' determinated as 'dir'",
     "'to' option '.' determinated as 'dir'",
-    "added './fixtures/directory' as a context dependency",
+    "added '.' as a context dependency",
     "added './fixtures/directory/directoryfile.txt' as a file dependency",
     "added './fixtures/directory/nested/deep-nested/deepnested.txt' as a file dependency",
     "added './fixtures/directory/nested/nestedfile.txt' as a file dependency",

@@ -28,13 +28,11 @@ const ESCAPED_CHARS = {
     '\u2029': '\\u2029'
 };
 
-function escapeUnsafeChars(unsafeChar)
-{
+function escapeUnsafeChars(unsafeChar) {
     return ESCAPED_CHARS[unsafeChar];
 }
 
-function generateUID()
-{
+function generateUID() {
     const bytes = randomBytes(UID_LENGTH);
     let result = '';
     for (let i = 0; i < UID_LENGTH; ++i) {
@@ -43,8 +41,7 @@ function generateUID()
     return result;
 }
 
-function deleteFunctions(obj)
-{
+function deleteFunctions(obj) {
     const functionKeys = [];
     for (const key in obj) {
         if (typeof obj[key] === "function") {
@@ -57,8 +54,7 @@ function deleteFunctions(obj)
     }
 }
 
-export default function serialize(obj, options)
-{
+export default function serialize(obj, options) {
     // eslint-disable-next-line no-unused-expressions,no-param-reassign
     options || (options = {});
 
@@ -69,20 +65,19 @@ export default function serialize(obj, options)
     }
 
     const functions = [];
-    const regexps   = [];
-    const dates     = [];
-    const maps      = [];
-    const sets      = [];
-    const arrays    = [];
-    const undefs    = [];
+    const regexps = [];
+    const dates = [];
+    const maps = [];
+    const sets = [];
+    const arrays = [];
+    const undefs = [];
     const infinities = [];
     const bigInts = [];
     const urls = [];
 
     // Returns placeholders for functions and regexps (identified by index)
     // which are later replaced by their string representation.
-    function replacer(key, value)
-    {
+    function replacer(key, value) {
 
         // For nested function
         if (options.ignoreFunction) {
@@ -101,57 +96,56 @@ export default function serialize(obj, options)
 
         if (type === 'object') {
             if (origValue instanceof RegExp) {
-                return `@__R-${  UID  }-${  regexps.push(origValue) - 1  }__@`;
+                return `@__R-${UID}-${regexps.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Date) {
-                return `@__D-${  UID  }-${  dates.push(origValue) - 1  }__@`;
+                return `@__D-${UID}-${dates.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Map) {
-                return `@__M-${  UID  }-${  maps.push(origValue) - 1  }__@`;
+                return `@__M-${UID}-${maps.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Set) {
-                return `@__S-${  UID  }-${  sets.push(origValue) - 1  }__@`;
+                return `@__S-${UID}-${sets.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Array) {
                 const isSparse = origValue.filter(() => true).length !== origValue.length;
                 if (isSparse) {
-                    return `@__A-${  UID  }-${  arrays.push(origValue) - 1  }__@`;
+                    return `@__A-${UID}-${arrays.push(origValue) - 1}__@`;
                 }
             }
 
             if (origValue instanceof URL) {
-                return `@__L-${  UID  }-${  urls.push(origValue) - 1  }__@`;
+                return `@__L-${UID}-${urls.push(origValue) - 1}__@`;
             }
         }
 
         if (type === 'function') {
-            return `@__F-${  UID  }-${  functions.push(origValue) - 1  }__@`;
+            return `@__F-${UID}-${functions.push(origValue) - 1}__@`;
         }
 
         if (type === 'undefined') {
-            return `@__U-${  UID  }-${  undefs.push(origValue) - 1  }__@`;
+            return `@__U-${UID}-${undefs.push(origValue) - 1}__@`;
         }
 
         if (type === 'number' && !isNaN(origValue) && !isFinite(origValue)) {
-            return `@__I-${  UID  }-${  infinities.push(origValue) - 1  }__@`;
+            return `@__I-${UID}-${infinities.push(origValue) - 1}__@`;
         }
 
         if (type === 'bigint') {
-            return `@__B-${  UID  }-${  bigInts.push(origValue) - 1  }__@`;
+            return `@__B-${UID}-${bigInts.push(origValue) - 1}__@`;
         }
 
         return value;
     }
 
-    function serializeFunc(fn)
-    {
+    function serializeFunc(fn) {
         const serializedFn = fn.toString();
         if (IS_NATIVE_CODE_REGEXP.test(serializedFn)) {
-            throw new TypeError(`Serializing native function: ${  fn.name}`);
+            throw new TypeError(`Serializing native function: ${fn.name}`);
         }
 
         // pure functions, example: {key: function() {}}
@@ -174,9 +168,9 @@ export default function serialize(obj, options)
 
         // enhanced literal objects, example: {key() {}}
         if (nonReservedSymbols.length > 0) {
-            return `${def.indexOf('async') > -1 ? 'async ' : ''  }function${
-                 def.join('').indexOf('*') > -1 ? '*' : ''
-                 }${serializedFn.substr(argsStartsAt)}`;
+            return `${def.indexOf('async') > -1 ? 'async ' : ''}function${
+                def.join('').indexOf('*') > -1 ? '*' : ''
+            }${serializedFn.substr(argsStartsAt)}`;
         }
 
         // arrow functions
@@ -234,23 +228,23 @@ export default function serialize(obj, options)
         }
 
         if (type === 'D') {
-            return `new Date("${  dates[valueIndex].toISOString()  }")`;
+            return `new Date("${dates[valueIndex].toISOString()}")`;
         }
 
         if (type === 'R') {
-            return `new RegExp(${  serialize(regexps[valueIndex].source)  }, "${  regexps[valueIndex].flags  }")`;
+            return `new RegExp(${serialize(regexps[valueIndex].source)}, "${regexps[valueIndex].flags}")`;
         }
 
         if (type === 'M') {
-            return `new Map(${  serialize(Array.from(maps[valueIndex].entries()), options)  })`;
+            return `new Map(${serialize(Array.from(maps[valueIndex].entries()), options)})`;
         }
 
         if (type === 'S') {
-            return `new Set(${  serialize(Array.from(sets[valueIndex].values()), options)  })`;
+            return `new Set(${serialize(Array.from(sets[valueIndex].values()), options)})`;
         }
 
         if (type === 'A') {
-            return `Array.prototype.slice.call(${  serialize(Object.assign({ length: arrays[valueIndex].length }, arrays[valueIndex]), options)  })`;
+            return `Array.prototype.slice.call(${serialize(Object.assign({length: arrays[valueIndex].length}, arrays[valueIndex]), options)})`;
         }
 
         if (type === 'U') {
@@ -262,11 +256,11 @@ export default function serialize(obj, options)
         }
 
         if (type === 'B') {
-            return `BigInt("${  bigInts[valueIndex]  }")`;
+            return `BigInt("${bigInts[valueIndex]}")`;
         }
 
         if (type === 'L') {
-            return `new URL("${  urls[valueIndex].toString()  }")`;
+            return `new URL("${urls[valueIndex].toString()}")`;
         }
 
         const fn = functions[valueIndex];

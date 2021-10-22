@@ -37,9 +37,7 @@ describe("transformAll option", () => {
                 transformAll(assets) {
                     return assets.reduce((accumulator, asset) => {
                         const content = asset.data.toString() || asset.sourceFilename;
-                        // eslint-disable-next-line no-param-reassign
-                        accumulator = `${accumulator}${content}::`;
-                        return accumulator;
+                        return `${accumulator}${content}::`;
                     }, "");
                 },
             },
@@ -61,11 +59,7 @@ describe("transformAll option", () => {
                 from: "directory/**/*.txt",
                 to: "file.txt",
                 async transformAll(assets) {
-                    return assets.reduce((accumulator, asset) => {
-                        // eslint-disable-next-line no-param-reassign
-                        accumulator = `${accumulator}${asset.sourceFilename}::`;
-                        return accumulator;
-                    }, "");
+                    return assets.reduce((accumulator, asset) => `${accumulator}${asset.sourceFilename}::`, "");
                 },
             },
             ],
@@ -89,11 +83,7 @@ describe("transformAll option", () => {
                 from: "directory/**/*.txt",
                 to: "file.txt",
                 transformAll(assets) {
-                    return assets.reduce((accumulator, asset) => {
-                    // eslint-disable-next-line no-param-reassign
-                        accumulator = `${accumulator}${asset.sourceFilename}::`;
-                        return accumulator;
-                    }, "");
+                    return assets.reduce((accumulator, asset) => `${accumulator}${asset.sourceFilename}::`, "");
                 },
                 force: true,
             },
@@ -145,9 +135,9 @@ describe("transformAll option", () => {
 
   it("should interpolate [fullhash] and [contenthash]", (done) => {
         runEmit({
-            expectedAssetKeys: ["4333a40fa67dfaaaefc9-ac7f6fcb65ddfcc43b2c-file.txt"],
+            expectedAssetKeys: ["4333a40fa67dfaaaefc9-47e8bdc316eff74b2d6e-file.txt"],
             expectedAssetContent: {
-                "4333a40fa67dfaaaefc9-ac7f6fcb65ddfcc43b2c-file.txt":
+                "4333a40fa67dfaaaefc9-47e8bdc316eff74b2d6e-file.txt":
                 "::special::new::::::::::new::::::new::",
             },
             patterns: [
@@ -155,11 +145,7 @@ describe("transformAll option", () => {
                 from: "**/*.txt",
                 to: "[contenthash]-[fullhash]-file.txt",
                 transformAll(assets) {
-                    return assets.reduce((accumulator, asset) => {
-                    // eslint-disable-next-line no-param-reassign
-                        accumulator = `${accumulator}${asset.data}::`;
-                        return accumulator;
-                    }, "");
+                    return assets.reduce((accumulator, asset) => `${accumulator}${asset.data}::`, "");
                 },
             },
             ],
@@ -181,9 +167,7 @@ describe("cache", () => {
                 transformAll(assets) {
                     return assets.reduce((accumulator, asset) => {
                         const content = asset.data.toString() || asset.sourceFilename;
-                    // eslint-disable-next-line no-param-reassign
-                        accumulator = `${accumulator}${content}::`;
-                        return accumulator;
+                        return `${accumulator}${content}::`;
                     }, "");
                 },
             },

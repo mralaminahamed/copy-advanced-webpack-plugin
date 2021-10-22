@@ -12,12 +12,10 @@ describe("to option", () => {
         it("should copy a file to a new file", (done) => {
             runEmit({
                 expectedAssetKeys: ["newfile.txt"],
-                patterns: [
-                {
+                patterns: [{
                     from: "file.txt",
                     to: "newfile.txt",
-                },
-                ],
+                },],
             })
         .then(done)
         .catch(done);
@@ -26,12 +24,10 @@ describe("to option", () => {
     it('should copy a file to a new file when "to" is absolute path', (done) => {
         runEmit({
             expectedAssetKeys: ["../tempdir/newfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: path.join(TEMP_DIR, "newfile.txt"),
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -40,12 +36,10 @@ describe("to option", () => {
     it("should copy a file to a new file inside nested directory", (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/newfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: "newdirectory/newfile.txt",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -54,12 +48,10 @@ describe("to option", () => {
     it('should copy a file to a new file inside nested directory when "to" an absolute path', (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/newfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: path.join(BUILD_DIR, "newdirectory/newfile.txt"),
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -68,12 +60,10 @@ describe("to option", () => {
     it("should copy a file to a new file inside other directory what out of context", (done) => {
         runEmit({
             expectedAssetKeys: ["../tempdir/newdirectory/newfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: path.join(TEMP_DIR, "newdirectory/newfile.txt"),
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -82,12 +72,10 @@ describe("to option", () => {
     it("should copy a file using invalid template syntax", (done) => {
         runEmit({
             expectedAssetKeys: ["directory/[md5::base64:20].txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.txt",
                 to: "directory/[md5::base64:20].txt",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -98,12 +86,10 @@ describe("to option", () => {
         it("should copy a file to a new directory", (done) => {
             runEmit({
                 expectedAssetKeys: ["newdirectory/file.txt"],
-                patterns: [
-                {
+                patterns: [{
                     from: "file.txt",
                     to: "newdirectory",
-                },
-                ],
+                },],
             })
         .then(done)
         .catch(done);
@@ -112,12 +98,10 @@ describe("to option", () => {
     it("should copy a file to a new directory out of context", (done) => {
         runEmit({
             expectedAssetKeys: ["../tempdir/file.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: TEMP_DIR,
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -126,12 +110,10 @@ describe("to option", () => {
     it("should copy a file to a new directory with a forward slash", (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/file.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: "newdirectory/",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -140,12 +122,10 @@ describe("to option", () => {
     it("should copy a file to a new directory with an extension and path separator at end", (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory.ext/file.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: `newdirectory.ext${path.sep}`,
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -154,12 +134,10 @@ describe("to option", () => {
     it('should copy a file to a new directory when "to" is absolute path', (done) => {
         runEmit({
             expectedAssetKeys: ["file.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: BUILD_DIR,
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -168,12 +146,10 @@ describe("to option", () => {
     it('should copy a file to a new directory when "to" is absolute path with a forward slash', (done) => {
         runEmit({
             expectedAssetKeys: ["file.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
-                to: `${BUILD_DIR} / `,
-            },
-            ],
+                to: `${BUILD_DIR}/`,
+            },],
         })
         .then(done)
         .catch(done);
@@ -182,12 +158,10 @@ describe("to option", () => {
     it("should copy a file to a new directory from nested directory", (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/directoryfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.txt",
                 to: "newdirectory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -196,12 +170,10 @@ describe("to option", () => {
     it('should copy a file to a new directory from nested directory when "from" is absolute path', (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/directoryfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: path.join(FIXTURES_DIR, "directory", "directoryfile.txt"),
                 to: "newdirectory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -210,12 +182,10 @@ describe("to option", () => {
     it('should copy a file to a new directory from nested directory when "from" is absolute path with a forward slash', (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/directoryfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: path.join(FIXTURES_DIR, "directory", "directoryfile.txt"),
                 to: "newdirectory/",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -229,12 +199,10 @@ describe("to option", () => {
             "newdirectory/nested/deep-nested/deepnested.txt",
             "newdirectory/nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
                 to: "newdirectory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -246,12 +214,10 @@ describe("to option", () => {
             "newdirectory/deep-nested/deepnested.txt",
             "newdirectory/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: path.join(FIXTURES_DIR, "directory", "nested"),
                 to: "newdirectory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -265,12 +231,10 @@ describe("to option", () => {
             "../tempdir/nested/deep-nested/deepnested.txt",
             "../tempdir/nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
                 to: TEMP_DIR,
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -284,12 +248,10 @@ describe("to option", () => {
             "nested/deep-nested/deepnested.txt",
             "nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
                 to: BUILD_DIR,
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -303,12 +265,10 @@ describe("to option", () => {
             "nested/deep-nested/deepnested.txt",
             "nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
-                to: `${BUILD_DIR} / `,
-            },
-            ],
+                to: `${BUILD_DIR}/`,
+            },],
         })
         .then(done)
         .catch(done);
@@ -320,12 +280,10 @@ describe("to option", () => {
             "newdirectory/deep-nested/deepnested.txt",
             "newdirectory/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/nested",
                 to: "newdirectory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -334,12 +292,10 @@ describe("to option", () => {
     it('should copy a file to a new directory when "to" is empty', (done) => {
         runEmit({
             expectedAssetKeys: ["file.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: "",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -357,12 +313,10 @@ describe("to option", () => {
           runEmit({
                 compiler,
                 expectedAssetKeys: ["directory/5d7817.txt"],
-                patterns: [
-                {
+                patterns: [{
                     from: "directory/directoryfile.txt",
                     to: "directory/[contenthash].txt",
-                },
-                ],
+                },],
             })
         .then(done)
         .catch(done);
@@ -379,12 +333,10 @@ describe("to option", () => {
 
       runEmit({
             expectedAssetKeys: ["directory/c2a6.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.txt",
                 to: "directory/[contenthash].txt",
-            },
-            ],
+            },],
             compiler,
         })
         .then(done)
@@ -400,12 +352,10 @@ describe("to option", () => {
 
       runEmit({
             expectedAssetKeys: ["directory/64cc145fc382934bd97a.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.txt",
                 to: "directory/[contenthash].txt",
-            },
-            ],
+            },],
             compiler,
         })
         .then(done)
@@ -415,12 +365,10 @@ describe("to option", () => {
     it('should copy a file using "name" and "ext"', (done) => {
         runEmit({
             expectedAssetKeys: ["binextension.bin"],
-            patterns: [
-            {
+            patterns: [{
                 from: "binextension.bin",
                 to: "[name][ext]",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -429,12 +377,10 @@ describe("to option", () => {
     it('should copy a file using "name", "contenthash" and "ext"', (done) => {
         runEmit({
             expectedAssetKeys: ["file-5d7817.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: "[name]-[contenthash:6][ext]",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -443,12 +389,10 @@ describe("to option", () => {
     it("should copy a file from nested directory", (done) => {
         runEmit({
             expectedAssetKeys: ["directoryfile-5d7817.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.txt",
                 to: "[name]-[contenthash:6][ext]",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -457,12 +401,10 @@ describe("to option", () => {
     it("should copy a file from nested directory to new directory", (done) => {
         runEmit({
             expectedAssetKeys: ["newdirectory/directoryfile-5d7817.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.txt",
                 to: "newdirectory/[name]-[contenthash:6][ext]",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -471,12 +413,10 @@ describe("to option", () => {
     it('should copy a file without an extension using "name", "ext"', (done) => {
         runEmit({
             expectedAssetKeys: ["noextension.31d6cf.newext"],
-            patterns: [
-            {
+            patterns: [{
                 from: "noextension",
                 to: "[name][ext].[contenthash:6].newext",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -490,12 +430,10 @@ describe("to option", () => {
             "newdirectory/nested/deep-nested/deepnested-31d6cf.txt",
             "newdirectory/nested/nestedfile-31d6cf.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
                 to: "newdirectory/[path][name]-[contenthash:6][ext]",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -505,12 +443,10 @@ describe("to option", () => {
         runEmit({
             compilation: { output: { path: "/path/to" } },
             expectedAssetKeys: ["newfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "file.txt",
                 to: "newfile.txt",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -521,20 +457,15 @@ describe("to option", () => {
         it('should transform target path when "from" is a file', (done) => {
             runEmit({
                 expectedAssetKeys: ["subdir/test.txt"],
-                patterns: [
-                {
+                patterns: [{
                     from: "file.txt",
                     to({ context, absoluteFilename }) {
                         expect(absoluteFilename).toBe(
                             path.join(FIXTURES_DIR, "file.txt")
                         );
-
-                    const targetPath = path.relative(context, absoluteFilename);
-
-                    return targetPath.replace("file.txt", "subdir/test.txt");
+                    return path.relative(context, absoluteFilename).replace("file.txt", "subdir/test.txt");
                     },
-                },
-                ],
+                },],
             })
         .then(done)
         .catch(done);
@@ -548,8 +479,7 @@ describe("to option", () => {
             "../directoryfile.txt",
             "../nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
                 toType: "file",
                 to({ context, absoluteFilename }) {
@@ -557,12 +487,9 @@ describe("to option", () => {
                         absoluteFilename.includes(path.join(FIXTURES_DIR, "directory"))
                     ).toBe(true);
 
-                const targetPath = path.relative(context, absoluteFilename);
-
-                return path.resolve(__dirname, path.basename(targetPath));
+                return path.resolve(__dirname, path.basename(path.relative(context, absoluteFilename)));
                 },
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -575,8 +502,7 @@ describe("to option", () => {
             "../directoryfile.txt.tst",
             "../nestedfile.txt.tst",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/**/*",
                 to({ context, absoluteFilename }) {
                     expect(absoluteFilename.includes(FIXTURES_DIR)).toBe(true);
@@ -750,7 +676,7 @@ describe("to option", () => {
                 to({ absoluteFilename }) {
                     const mathes = absoluteFilename.match(/\.([^.]*)$/);
                     const [, res] = mathes;
-                    return `nested / ${res}`;
+                    return `nested/${res}`;
                 },
             },
             ],
@@ -801,12 +727,10 @@ describe("to option", () => {
         it('should flatten a directory\'s files to a root directory when "from" is a file', (done) => {
             runEmit({
                 expectedAssetKeys: ["directoryfile.txt"],
-                patterns: [
-                {
+                patterns: [{
                     to: ".",
                     from: "directory/directoryfile.txt",
-                },
-                ],
+                },],
             })
         .then(done)
         .catch(done);
@@ -818,7 +742,7 @@ describe("to option", () => {
             patterns: [
             {
                 to({ absoluteFilename }) {
-                    return `nested / ${path.basename(absoluteFilename)}`;
+                    return `nested/${path.basename(absoluteFilename)}`;
                 },
                 from: "directory/directoryfile.txt",
             },
@@ -836,11 +760,9 @@ describe("to option", () => {
             "directoryfile.txt",
             "nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 to: "[name][ext]",
-                from: "directory",
-            },
+                from: "directory",},
             ],
         })
         .then(done)
@@ -855,15 +777,13 @@ describe("to option", () => {
             "newdirectory/directoryfile.txt",
             "newdirectory/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 toType: "file",
                 to({ absoluteFilename }) {
-                    return `newdirectory / ${path.basename(absoluteFilename)}`;
+                    return `newdirectory/${path.basename(absoluteFilename)}`;
                 },
                 from: "directory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -876,14 +796,12 @@ describe("to option", () => {
             "directoryfile.txt",
             "nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 to({ absoluteFilename }) {
                     return path.basename(absoluteFilename);
                 },
                 from: "directory/**/*",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -896,14 +814,12 @@ describe("to option", () => {
             "nested/directoryfile.txt",
             "nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 to({ absoluteFilename }) {
-                    return `nested / ${path.basename(absoluteFilename)}`;
+                    return `nested/${path.basename(absoluteFilename)}`;
                 },
                 from: "directory/**/*",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -916,15 +832,13 @@ describe("to option", () => {
             "directoryfile.txt",
             "nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 context: "directory",
                 from: "**/*",
                 to({ absoluteFilename }) {
                     return path.basename(absoluteFilename);
                 },
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -937,15 +851,13 @@ describe("to option", () => {
             "nested/directoryfile.txt",
             "nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 context: "directory",
                 from: "**/*",
                 to({ absoluteFilename }) {
-                    return `nested / ${path.basename(absoluteFilename)}`;
+                    return `nested/${path.basename(absoluteFilename)}`;
                 },
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -955,13 +867,11 @@ describe("to option", () => {
   it("should process template string", (done) => {
         runEmit({
             expectedAssetKeys: [
-            "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.ac7f6fcb65ddfcc43b2c-ac7f6fcb65ddfcc43b2c.txt--[unknown]",
+            "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e-47e8bdc316eff74b2d6e.txt--[unknown]",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/directoryfile.*",
-                to: "[path][base]-new-[name][ext].[contenthash].[hash]-[fullhash][ext]--[unknown]",
-            },
+                to: "[path][base]-new-[name][ext].[contenthash].[hash]-[fullhash][ext]--[unknown]",},
             ],
         })
       .then(done)
@@ -986,13 +896,11 @@ describe("to option", () => {
             ],
         },
         expectedAssetKeys: ["5d7817ed5bc246756d73-directoryfile.txt"],
-        patterns: [
-        {
+        patterns: [{
             from: "directory/directoryfile.*",
             to: "[contenthash]-[name][ext]",
             toType: "template",
-        },
-        ],
+        },],
     })
       .then(done)
       .catch(done);

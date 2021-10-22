@@ -7,7 +7,7 @@ class Node {
     }
 }
 
-class Queue {
+export default class Queue {
     constructor()
     {
         this.clear();}
@@ -65,5 +65,3 @@ class Queue {
         }
     }
 }
-
-module.exports = Queue;

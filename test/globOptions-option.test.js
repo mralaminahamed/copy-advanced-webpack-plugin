@@ -229,7 +229,7 @@ describe("globOptions option", () => {
                 from: "directory/",
                 toType: "file",
                 to({ absoluteFilename }) {
-                    return `img / ${path.basename(absoluteFilename)}`;
+                    return `img/${path.basename(absoluteFilename)}`;
                 },
                 globOptions: {
                     ignore: ["**/directoryfile.*", "**/deep-nested/**"],
@@ -300,18 +300,14 @@ describe("globOptions option", () => {
   it('should ignore files when "from" is a file (global ignore)', (done) => {
         runEmit({
             expectedErrors: [
-            new Error(
-                `unable to locate '${FIXTURES_DIR_NORMALIZED}/file.txt' glob`
-            ),
-          ],
-        patterns: [
-        {
-            from: "file.txt",
-            globOptions: {
-                ignore: ["**/file.*"],
-            },
-            },
+            new Error(`unable to locate '${FIXTURES_DIR_NORMALIZED}/file.txt' glob`),
             ],
+            patterns: [{
+                from: "file.txt",
+                globOptions: {
+                    ignore: ["**/file.*"],
+                },
+            },],
         })
       .then(done)
       .catch(done);

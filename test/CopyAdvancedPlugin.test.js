@@ -1,23 +1,20 @@
 import path from "path";
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import webpack from "webpack";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import del from "del";
-// eslint-disable-next-line import/no-extraneous-dependencies
+
 import { createFsFromVolume, Volume } from "memfs";
 
 import CopyAdvancedPlugin from "../src/index";
 
 import { run, runEmit, runChange } from "./helpers/run";
-
 import { readAssets, getCompiler, compile } from "./helpers";
 
 const FIXTURES_DIR = path.join(__dirname, "fixtures");
 
-describe("CopyAdvancedPlugin", () => {
-    describe("basic", () => {
-        it("should copy a file", (done) => {
+describe('CopyAdvancedPlugin', () => {
+    describe('basic', () => {
+        it('should copy a file', (done) => {
             runEmit({
                 expectedAssetKeys: ["file.txt"],
                 patterns: [
@@ -38,11 +35,9 @@ describe("CopyAdvancedPlugin", () => {
             "nested/deep-nested/deepnested.txt",
             "nested/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -216,15 +211,9 @@ describe("CopyAdvancedPlugin", () => {
         runEmit({
             expectedAssetKeys: ["binextension.bin", "file.txt", "noextension"],
             patterns: [
-            {
-                from: "binextension.bin",
-            },
-            {
-                from: "file.txt",
-            },
-            {
-                from: "noextension",
-            },
+            {from: "binextension.bin",},
+            {from: "file.txt",},
+            {from: "noextension",},
             ],
         })
         .then(done)
@@ -234,11 +223,9 @@ describe("CopyAdvancedPlugin", () => {
     it('should work with linux path segment separation path when "from" is glob', (done) => {
         runEmit({
             expectedAssetKeys: ["directory/nested/nestedfile.txt"],
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/nested/*",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -255,11 +242,9 @@ describe("CopyAdvancedPlugin", () => {
             "dir (86)/nesteddir/deepnesteddir/deepnesteddir.txt",
             "dir (86)/nesteddir/nestedfile.txt",
             ],
-            patterns: [
-            {
+            patterns: [{
                 from: "!(directory)/**/*.txt",
-            },
-            ],
+            },],
         })
         .then(done)
         .catch(done);
@@ -287,12 +272,10 @@ describe("CopyAdvancedPlugin", () => {
                 ],
             },
             expectedAssetKeys,
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
                 force: true,
-            },
-            ],
+            },],
         })
         .then(({ stats }) => {
             for (const name of expectedAssetKeys) {
@@ -366,10 +349,8 @@ describe("CopyAdvancedPlugin", () => {
         run({
             withExistingAsset: true,
             expectedAssetKeys,
-            patterns: [
-            {
-                from: "directory",
-            },
+            patterns: [{
+                from: "directory",},
             ],
         })
         .then(({ stats }) => {
@@ -447,11 +428,9 @@ describe("CopyAdvancedPlugin", () => {
             const expectedAssetKeys = ["file.txt"];
 
             run({
-                patterns: [
-                {
+                patterns: [{
                     from: "file.txt",
-                },
-                ],
+                },],
             })
         .then(({ compiler, stats }) => {
             expect(
@@ -464,11 +443,9 @@ describe("CopyAdvancedPlugin", () => {
 
     it('should add a directory to the watch list when "from" is a directory', (done) => {
         run({
-            patterns: [
-            {
+            patterns: [{
                 from: "directory",
-            },
-            ],
+            },],
         })
         .then(({ stats }) => {
             const { contextDependencies } = stats.compilation;
@@ -484,11 +461,9 @@ describe("CopyAdvancedPlugin", () => {
 
     it('should add a directory to the watch list when "from" is a glob', (done) => {
         run({
-            patterns: [
-            {
+            patterns: [{
                 from: "directory/**/*",
-            },
-            ],
+            },],
         })
         .then(({ stats }) => {
             const { contextDependencies } = stats.compilation;

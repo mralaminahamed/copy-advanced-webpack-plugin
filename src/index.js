@@ -1,20 +1,17 @@
-// external dependencies
 import crypto from 'crypto';
 import path from 'path';
 
-import {validate} from 'schema-utils';
-import normalizePath from 'normalize-path';
 import fastGlob from 'fast-glob';
 import globby from 'globby';
+import {validate} from 'schema-utils';
+import normalizePath from 'normalize-path';
 
-// internal dependencies
 import {version} from '../package.json';
 
 import schema from './options.json';
 import globParent from './utils/glob-parent';
 import serialize from './utils/serialize-javascript';
 import Limit from './utils/limit';
-
 import {readFile, stat} from './utils/promisify';
 
 

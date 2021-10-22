@@ -5,20 +5,20 @@
  * Licensed under the MIT License.
  */
 
-module.exports = function isExtGlob(str)
+export default function isExtGlob(path)
 {
-    if (typeof str !== 'string' || str === '') {
+    let match;
+    if (typeof path !== 'string' || path === '') {
         return false;
     }
 
-    let match;
     // eslint-disable-next-line no-cond-assign
-    while ((match = /(\\).|([@?!+*]\(.*\))/g.exec(str))) {
+    while ((match = /(\\).|([@?!+*]\(.*\))/g.exec(path))) {
         if (match[2]) {
             return true;
         }
         // eslint-disable-next-line no-param-reassign
-        str = str.slice(match.index + match[0].length);
+        path = path.slice(match.index + match[0].length);
     }
 
     return false;
