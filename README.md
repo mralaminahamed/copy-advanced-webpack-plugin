@@ -11,7 +11,8 @@
 [![tests][tests]][tests-url]
 [![cover][cover]][cover-url]
 <!--[![chat][chat]][chat-url]-->
-[![size][size]][size-url]
+[![size][size]][size-url] [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+
 
 # copy-advanced-webpack-plugin
 
