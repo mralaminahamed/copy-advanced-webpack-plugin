@@ -157,9 +157,9 @@ describe("transformAll option", () => {
                 transformAll(assets) {
                     return assets.reduce((accumulator, asset) => {
                     // eslint-disable-next-line no-param-reassign
-                    accumulator = `${accumulator}${asset.data}::`;
-                    return accumulator;
-                }, "");
+                        accumulator = `${accumulator}${asset.data}::`;
+                        return accumulator;
+                    }, "");
                 },
             },
             ],
@@ -180,11 +180,11 @@ describe("cache", () => {
                 to: "file.txt",
                 transformAll(assets) {
                     return assets.reduce((accumulator, asset) => {
-                    const content = asset.data.toString() || asset.sourceFilename;
+                        const content = asset.data.toString() || asset.sourceFilename;
                     // eslint-disable-next-line no-param-reassign
-                    accumulator = `${accumulator}${content}::`;
-                    return accumulator;
-                }, "");
+                        accumulator = `${accumulator}${content}::`;
+                        return accumulator;
+                    }, "");
                 },
             },
             ],

@@ -21,9 +21,7 @@ import {readFile, stat} from './utils/promisify';
 // Internal variables
 const template = /\[\\*([\w:]+)\\*\]/i;
 
-
-
-class CopyAdvancedPlugin {
+export default  class CopyAdvancedPlugin {
     // Any options should be passed in the constructor of your plugin,
     // (this is a public API of your plugin).
     constructor(options = [])
@@ -872,5 +870,3 @@ class CopyAdvancedPlugin {
         });
     }
 }
-
-module.exports = CopyAdvancedPlugin;
