@@ -471,7 +471,7 @@ describe('CopyAdvancedPlugin', () => {
                 path.join(FIXTURES_DIR, "directory")
             );
 
-          expect(isIncludeDependency).toBe(false);
+          expect(isIncludeDependency).toBe(true);
         })
         .then(done)
         .catch(done);
