@@ -2,18 +2,36 @@
     "name": "copy-advanced-webpack-plugin",
     "version": "1.0.2",
     "description": "Copy files && directories which are already exists or generated with webpack",
-    "license": "MIT",
-    "repository": "https://github.com/mralaminahamed/copy-advanced-webpack-plugin",
-    "author": "Al-Amin Ahamed",
+    "keywords": [
+        "webpack",
+        "plugin",
+        "transfer",
+        "move",
+        "copy",
+        "copy advanced"
+    ],
     "homepage": "https://github.com/mralaminahamed/copy-advanced-webpack-plugin",
-    "bugs": "https://github.com/mralaminahamed/copy-advanced-webpack-plugin/issues",
+    "bugs": {
+        "url": "https://github.com/mralaminahamed/copy-advanced-webpack-plugin/issues",
+        "email": "alamin.rohita@hotmail.com"
+    },
+    "license": "MIT",
+    "author": {
+        "name": "Al-Amin Ahamed",
+        "email": "alamin.rohita@hotmail.com",
+        "url": "https://github.com/mralaminahamed//"
+    },
     "funding": {
         "type": "opencollective",
         "url": "https://opencollective.com/al-amin-ahamed"
     },
+    "files": [
+        "dist"
+    ],
     "main": "dist/cjs.js",
-    "engines": {
-        "node": ">= 12.13.0"
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mralaminahamed/copy-advanced-webpack-plugin.git"
     },
     "scripts": {
         "start": "npm run build -- -w",
@@ -32,12 +50,6 @@
         "test": "npm run test:coverage",
         "prepare": "husky install && npm run build",
         "release": "standard-version"
-    },
-    "files": [
-        "dist"
-    ],
-    "peerDependencies": {
-        "webpack": "^5.1.0"
     },
     "dependencies": {
         "fast-glob": "^3.2.7",
@@ -71,12 +83,10 @@
         "standard-version": "^9.3.1",
         "webpack": "^5.50.0"
     },
-    "keywords": [
-        "webpack",
-        "plugin",
-        "transfer",
-        "move",
-        "copy",
-        "copy advanced"
-    ]
+    "peerDependencies": {
+        "webpack": "^5.1.0"
+    },
+    "engines": {
+        "node": ">= 12.13.0"
+    }
 }
