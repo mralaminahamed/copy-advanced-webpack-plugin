@@ -42,7 +42,7 @@ jobs:
                 run: rm -rf node_modules && rm ./package-lock.json && npm install --no-optional
 
             -   name: Lint
-                run: npm run lint
+                run: npm run lint:js
 
             -   name: Security audit
                 run: npm run security
