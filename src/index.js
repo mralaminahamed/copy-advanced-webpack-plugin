@@ -54,12 +54,12 @@ export default  class CopyAdvancedPlugin {
                 undefined,
                 null,
                 (error, snapshot) => {
-                if (error) {
-                    reject(error);
+                    if (error) {
+                        reject(error);
 
-                    return;
-                }
-                resolve(snapshot);
+                        return;
+                    }
+                    resolve(snapshot);
                 }
             );
         });
@@ -72,12 +72,12 @@ export default  class CopyAdvancedPlugin {
             compilation.fileSystemInfo.checkSnapshotValid(
                 snapshot,
                 (error, isValid) => {
-                if (error) {
-                    reject(error);
+                    if (error) {
+                        reject(error);
 
-                    return;
-                }
-                resolve(isValid);
+                        return;
+                    }
+                    resolve(isValid);
                 }
             );
         });
@@ -622,172 +622,137 @@ export default  class CopyAdvancedPlugin {
             const cache = compilation.getCache(pluginWebpackName);
 
 
-            compiler.hooks.assetEmitted.tap(
-                pluginName,
-                // eslint-disable-next-line no-unused-vars,no-shadow
-                (file, { content, source, outputPath, compilation, targetPath }) => {
-                if (/css/.test(file)) {
-                    // eslint-disable-next-line no-console
-                    // console.log('css file found')
-                    // eslint-disable-next-line no-console,line-comment-position
-                    // console.log(file); // <Buffer 66 6f 6f 62 61 72>
-                    // eslint-disable-next-line no-console,line-comment-position
-                    // console.log(`output path: ${  outputPath}`); // <Buffer 66 6f 6f 62 61 72>
-                    // eslint-disable-next-line no-console,line-comment-position
-                    // console.log(`target path: ${  targetPath}`); // <Buffer 66 6f 6f 62 61 72>
-                }
-                // eslint-disable-next-line no-console,line-comment-position
-                 //   console.log(`filename: ${  file}`); // <Buffer 66 6f 6f 62 61 72>
-                // eslint-disable-next-line no-console,line-comment-position
-                //    console.log(content); // <Buffer 66 6f 6f 62 61 72>
-                // eslint-disable-next-line no-console,line-comment-position
-                 //   console.log(`output path: ${  outputPath}`); // <Buffer 66 6f 6f 62 61 72>
-                // eslint-disable-next-line no-console,line-comment-position
-                 //   console.log(`target path: ${  targetPath}`); // <Buffer 66 6f 6f 62 61 72>
-                }
-            );
-
-
             compilation.hooks.processAssets.tapAsync(
                 {
                     name: pluginFullName,
                     stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
                 },
                 async(unusedAssets, callback) => {
-                logger.log("starting to add additional assets...");
-                const assetMap = new Map();
-                await Promise.all(
-                        this.patterns.map(
-                        (item, index) =>
-                        limit(async() => {
+                    logger.log("starting to add additional assets...");
+                    const assetMap = new Map();
+                    await Promise.all( this.patterns.map(
+                            (item, index) =>
+                            limit(async() => {
                                 let assets;
 
-                                try {
-                                    assets = await CopyAdvancedPlugin.runPattern(
-                                    compiler,
-                                    compilation,
-                                    logger,
-                                    cache,
-                                    item,
-                                    index
-                                    );
-                                } catch (error) {
-                                    compilation.errors.push(error);
+                            try {
+                                assets = await CopyAdvancedPlugin.runPattern(compiler, compilation, logger, cache, item, index);
+                            } catch (error) {
+                                compilation.errors.push(error);
+                                return;
+                            }
 
-                                    return;
-                                }
+                            if (assets && assets.length > 0) {
+                                if (item.transformAll) {
+                                    if (typeof item.to === "undefined") {
+                                        compilation.errors.push(
+                                        new Error(
+                                        `Invalid "pattern.to" for the "pattern.from": "${item.from}" and "pattern.transformAll" function . The "to" option must be specified.`
+                                        )
+                                        );
 
-                                if (assets && assets.length > 0) {
-                                    if (item.transformAll) {
-                                        if (typeof item.to === "undefined") {
-                                            compilation.errors.push(
-                                            new Error(
-                                            `Invalid "pattern.to" for the "pattern.from": "${item.from}" and "pattern.transformAll" function . The "to" option must be specified.`
+                                        return;
+                                    }
+
+                                    assets.sort(
+                                    (a, b) =>
+                                    a.absoluteFilename > b.absoluteFilename
+                                        ? 1
+                                        : a.absoluteFilename < b.absoluteFilename
+                                        ? -1
+                                        : 0
+                                );
+
+                                    const mergedEtag =
+                                        assets.length === 1
+                                        ? cache.getLazyHashedEtag(assets[0].source.buffer())
+                                        : assets.reduce((accumulator, asset, i) => {
+                                            // eslint-disable-next-line no-param-reassign
+                                            accumulator = cache.mergeEtags(
+                                            i === 1
+                                            ? cache.getLazyHashedEtag(
+                                            accumulator.source.buffer()
                                             )
+                                            : accumulator,
+                                            cache.getLazyHashedEtag(asset.source.buffer())
+                                        );
+
+                                    return accumulator;
+                                        });
+
+                                    const cacheKeys = `transformAll | ${serialize({
+                                        version,
+                                        from: item.from,
+                                        to: item.to,
+                                        transformAll: item.transformAll,
+                                        })}`;
+                                    const eTag = cache.getLazyHashedEtag(mergedEtag);
+                                    const cacheItem = cache.getItemCache(cacheKeys, eTag);
+                                    let transformedAsset = await cacheItem.getPromise();
+
+                                    if (!transformedAsset) {
+                                        transformedAsset = {filename: item.to};
+
+                                        try {
+                                            transformedAsset.data = await item.transformAll(
+                                            assets.map((asset) => {
+                                                return {
+                                                    data: asset.source.buffer(),
+                                                    sourceFilename: asset.sourceFilename,
+                                                    absoluteFilename: asset.absoluteFilename,
+                                                };
+                                                })
                                             );
+                                        } catch (error) {
+                                            compilation.errors.push(error);
 
                                             return;
                                         }
 
-                                        assets.sort(
-                                        (a, b) =>
-                                        a.absoluteFilename > b.absoluteFilename
-                                            ? 1
-                                            : a.absoluteFilename < b.absoluteFilename
-                                            ? -1
-                                            : 0
-                                    );
-
-                                        const mergedEtag =
-                                            assets.length === 1
-                                            ? cache.getLazyHashedEtag(assets[0].source.buffer())
-                                            : assets.reduce((accumulator, asset, i) => {
-                                                // eslint-disable-next-line no-param-reassign
-                                                accumulator = cache.mergeEtags(
-                                                i === 1
-                                                ? cache.getLazyHashedEtag(
-                                                accumulator.source.buffer()
-                                                )
-                                                : accumulator,
-                                                cache.getLazyHashedEtag(asset.source.buffer())
-                                            );
-
-                                        return accumulator;
-                                            });
-
-                                        const cacheKeys = `transformAll | ${serialize({
-                                            version,
-                                            from: item.from,
-                                            to: item.to,
-                                            transformAll: item.transformAll,
-                                            })}`;
-                                        const eTag = cache.getLazyHashedEtag(mergedEtag);
-                                        const cacheItem = cache.getItemCache(cacheKeys, eTag);
-                                        let transformedAsset = await cacheItem.getPromise();
-
-                                        if (!transformedAsset) {
-                                            transformedAsset = {filename: item.to};
-
-                                            try {
-                                                transformedAsset.data = await item.transformAll(
-                                                assets.map((asset) => {
-                                                    return {
-                                                        data: asset.source.buffer(),
-                                                        sourceFilename: asset.sourceFilename,
-                                                        absoluteFilename: asset.absoluteFilename,
-                                                    };
-                                                    })
-                                                );
-                                            } catch (error) {
-                                                compilation.errors.push(error);
-
-                                                return;
-                                            }
-
-                                            if (template.test(item.to)) {
-                                                const contentHash = CopyAdvancedPlugin.getContentHash(
-                                                compiler,
-                                                compilation,
-                                                transformedAsset.data
-                                                );
-
-                                                const {path: interpolatedFilename, info: assetInfo} =
-                                                    compilation.getPathWithInfo(normalizePath(item.to), {
-                                                        contentHash,
-                                                        chunk: {
-                                                            hash: contentHash,
-                                                            contentHash,
-                                                        },
-                                                        });
-
-                                                transformedAsset.filename = interpolatedFilename;
-                                                transformedAsset.info = assetInfo;
-                                            }
-
-                                            const {RawSource} = compiler.webpack.sources;
-
-                                            transformedAsset.source = new RawSource(
+                                        if (template.test(item.to)) {
+                                            const contentHash = CopyAdvancedPlugin.getContentHash(
+                                            compiler,
+                                            compilation,
                                             transformedAsset.data
                                             );
-                                            transformedAsset.force = item.force;
 
-                                            await cacheItem.storePromise(transformedAsset);
+                                            const {path: interpolatedFilename, info: assetInfo} =
+                                                compilation.getPathWithInfo(normalizePath(item.to), {
+                                                    contentHash,
+                                                    chunk: {
+                                                        hash: contentHash,
+                                                        contentHash,
+                                                    },
+                                                    });
+
+                                            transformedAsset.filename = interpolatedFilename;
+                                            transformedAsset.info = assetInfo;
                                         }
 
-                                        assets = [transformedAsset];
+                                        const {RawSource} = compiler.webpack.sources;
+
+                                        transformedAsset.source = new RawSource(
+                                        transformedAsset.data
+                                        );
+                                        transformedAsset.force = item.force;
+
+                                        await cacheItem.storePromise(transformedAsset);
                                     }
 
-                                    const priority = item.priority || 0;
-
-                                    if (!assetMap.has(priority)) {
-                                        assetMap.set(priority, []);
-                                    }
-
-                                    assetMap.get(priority).push(...assets);
+                                    assets = [transformedAsset];
                                 }
+
+                                const priority = item.priority || 0;
+
+                                if (!assetMap.has(priority)) {
+                                    assetMap.set(priority, []);
+                                }
+
+                                assetMap.get(priority).push(...assets);
+                            }
                             })
-                    )
-                    );
+                        )
+                );
                 const assets = [...assetMap.entries()].sort((a, b) => a[0] - b[0]);
                 // Avoid writing assets inside `p-limit`, because it creates concurrency.
                     // It could potentially lead to an error - 'Multiple assets emit different content to the same filename'
