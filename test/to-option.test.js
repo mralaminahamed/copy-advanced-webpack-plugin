@@ -1,7 +1,7 @@
 import path from "path";
 
-import { runEmit } from "./helpers/run";
-import { getCompiler } from "./helpers";
+import {runEmit} from "./helpers/run";
+import {getCompiler} from "./helpers";
 
 const BUILD_DIR = path.join(__dirname, "build");
 const TEMP_DIR = path.join(__dirname, "tempdir");
@@ -628,7 +628,9 @@ describe("to option", () => {
 
                     const targetPath = path.relative(context, absoluteFilename);
 
-                    const newPath = await new Promise((resolve) => {
+                    let newPath;
+                    // eslint-disable-next-line prefer-const
+                    newPath = await new Promise((resolve) => {
                         resolve(path.resolve(__dirname, path.basename(targetPath)));
                     });
 
@@ -729,9 +731,7 @@ describe("to option", () => {
                 to({ absoluteFilename }) {
                     const mathes = absoluteFilename.match(/\.([^.]*)$/);
                     const [, res] = mathes;
-                    const target = res;
-
-                    return target;
+                    return res;
                 },
             },
             ],
@@ -750,9 +750,7 @@ describe("to option", () => {
                 to({ absoluteFilename }) {
                     const mathes = absoluteFilename.match(/\.([^.]*)$/);
                     const [, res] = mathes;
-                    const target = `nested / ${res}`;
-
-                    return target;
+                    return `nested / ${res}`;
                 },
             },
             ],
