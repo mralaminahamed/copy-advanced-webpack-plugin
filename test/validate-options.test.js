@@ -1,4 +1,4 @@
-import CopyPlugin from "../src/index";
+import CopyAdvancedPlugin from "../src/index";
 
 describe("validate options", () => {
   const tests = {
@@ -317,7 +317,7 @@ describe("validate options", () => {
 
       try {
         // eslint-disable-next-line no-new
-        new CopyPlugin(
+        new CopyAdvancedPlugin(
           key === "options"
             ? { patterns: [{ from: "file.txt" }], [key]: value }
             : { [key]: value }
