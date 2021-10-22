@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-import CopyPlugin from "../../src/index";
+import CopyAdvancedPlugin from "../../src/index";
 
 import ChildCompilerPlugin from "./ChildCompiler";
 import PreCopyPlugin from "./PreCopyPlugin";
@@ -57,7 +57,7 @@ function run(opts)
             );
         }
 
-        new CopyPlugin({ patterns: opts.patterns, options: opts.options }).apply(
+        new CopyAdvancedPlugin({ patterns: opts.patterns, options: opts.options }).apply(
             compiler
         );
 
@@ -156,7 +156,7 @@ function runChange(opts)
     return new Promise(async(resolve) => {
         const compiler = getCompiler();
 
-        new CopyPlugin({ patterns: opts.patterns, options: opts.options }).apply(
+        new CopyAdvancedPlugin({ patterns: opts.patterns, options: opts.options }).apply(
             compiler
         );
 
