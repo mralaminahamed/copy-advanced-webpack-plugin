@@ -870,7 +870,7 @@ describe("CopyAdvancedPlugin", () => {
 
         await del([
         cacheDirectory,
-        path.resolve(__dirname, "../node_modules/.cache/copy-webpack-plugin"),
+        path.resolve(__dirname, "../node_modules/.cache/copy-advanced-webpack-plugin"),
         ]);
 
       const compiler = getCompiler({
@@ -1068,7 +1068,7 @@ describe("CopyAdvancedPlugin", () => {
         .then(({ compiler, stats }) => {
             const root = path.resolve(__dirname).replace(/\\/g, "/");
             const logs = stats.compilation.logging
-            .get("copy-webpack-plugin")
+            .get("copy-advanced-webpack-plugin")
             .map(
                 (entry) =>
                 entry.args[0].replace(/\\/g, "/").split(root).join(".")
@@ -1102,7 +1102,7 @@ describe("CopyAdvancedPlugin", () => {
         .then(({ compiler, stats }) => {
             const root = path.resolve(__dirname).replace(/\\/g, "/");
             const logs = stats.compilation.logging
-            .get("copy-webpack-plugin")
+            .get("copy-advanced-webpack-plugin")
             .map(
                 (entry) =>
                 entry.args[0].replace(/\\/g, "/").split(root).join(".")
@@ -1138,7 +1138,7 @@ describe("CopyAdvancedPlugin", () => {
         .then(({ compiler, stats }) => {
             const root = path.resolve(__dirname).replace(/\\/g, "/");
             const logs = stats.compilation.logging
-            .get("copy-webpack-plugin")
+            .get("copy-advanced-webpack-plugin")
             .map(
                 (entry) =>
                 entry.args[0].replace(/\\/g, "/").split(root).join(".")
@@ -1170,7 +1170,7 @@ describe("CopyAdvancedPlugin", () => {
         .then(({ compiler, stats }) => {
             const root = path.resolve(__dirname).replace(/\\/g, "/");
             const logs = stats.compilation.logging
-            .get("copy-webpack-plugin")
+            .get("copy-advanced-webpack-plugin")
             .map(
                 (entry) =>
                 entry.args[0].replace(/\\/g, "/").split(root).join(".")

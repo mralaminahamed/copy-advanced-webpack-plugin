@@ -630,22 +630,22 @@ class CopyAdvancedPlugin {
                 (file, { content, source, outputPath, compilation, targetPath }) => {
                 if (/css/.test(file)) {
                     // eslint-disable-next-line no-console
-                    console.log('css file found')
+                    // console.log('css file found')
                     // eslint-disable-next-line no-console,line-comment-position
-                    console.log(file); // <Buffer 66 6f 6f 62 61 72>
+                    // console.log(file); // <Buffer 66 6f 6f 62 61 72>
                     // eslint-disable-next-line no-console,line-comment-position
-                    console.log(`output path: ${  outputPath}`); // <Buffer 66 6f 6f 62 61 72>
+                    // console.log(`output path: ${  outputPath}`); // <Buffer 66 6f 6f 62 61 72>
                     // eslint-disable-next-line no-console,line-comment-position
-                    console.log(`target path: ${  targetPath}`); // <Buffer 66 6f 6f 62 61 72>
+                    // console.log(`target path: ${  targetPath}`); // <Buffer 66 6f 6f 62 61 72>
                 }
                 // eslint-disable-next-line no-console,line-comment-position
-                    console.log(`filename: ${  file}`); // <Buffer 66 6f 6f 62 61 72>
+                 //   console.log(`filename: ${  file}`); // <Buffer 66 6f 6f 62 61 72>
                 // eslint-disable-next-line no-console,line-comment-position
-                    console.log(content); // <Buffer 66 6f 6f 62 61 72>
+                //    console.log(content); // <Buffer 66 6f 6f 62 61 72>
                 // eslint-disable-next-line no-console,line-comment-position
-                    console.log(`output path: ${  outputPath}`); // <Buffer 66 6f 6f 62 61 72>
+                 //   console.log(`output path: ${  outputPath}`); // <Buffer 66 6f 6f 62 61 72>
                 // eslint-disable-next-line no-console,line-comment-position
-                    console.log(`target path: ${  targetPath}`); // <Buffer 66 6f 6f 62 61 72>
+                 //   console.log(`target path: ${  targetPath}`); // <Buffer 66 6f 6f 62 61 72>
                 }
             );
 

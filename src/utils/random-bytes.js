@@ -1,3 +1,1 @@
-import randomBytes from 'crypto';
-
-export default randomBytes
+module.exports = require('crypto').randomBytes

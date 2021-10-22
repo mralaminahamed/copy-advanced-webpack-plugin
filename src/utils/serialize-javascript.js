@@ -4,7 +4,6 @@ Copyrights licensed under the New BSD License.
 See the accompanying LICENSE file for terms.
 */
 
-
 import randomBytes from './random-bytes';
 
 // Generate an internal UID to make the regexp pattern harder to guess.
