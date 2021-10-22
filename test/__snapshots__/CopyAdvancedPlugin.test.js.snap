@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CopyPlugin basic should work with multi compiler mode: assets 1`] = `
+exports[`CopyAdvancedPlugin basic should work with multi compiler mode: assets 1`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -10,7 +10,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin basic should work with multi compiler mode: assets 2`] = `
+exports[`CopyAdvancedPlugin basic should work with multi compiler mode: assets 2`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -20,15 +20,15 @@ Object {
 }
 `;
 
-exports[`CopyPlugin basic should work with multi compiler mode: errors 1`] = `Array []`;
+exports[`CopyAdvancedPlugin basic should work with multi compiler mode: errors 1`] = `Array []`;
 
-exports[`CopyPlugin basic should work with multi compiler mode: errors 2`] = `Array []`;
+exports[`CopyAdvancedPlugin basic should work with multi compiler mode: errors 2`] = `Array []`;
 
-exports[`CopyPlugin basic should work with multi compiler mode: warnings 1`] = `Array []`;
+exports[`CopyAdvancedPlugin basic should work with multi compiler mode: warnings 1`] = `Array []`;
 
-exports[`CopyPlugin basic should work with multi compiler mode: warnings 2`] = `Array []`;
+exports[`CopyAdvancedPlugin basic should work with multi compiler mode: warnings 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 1`] = `
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 1`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -38,7 +38,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 2`] = `
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 2`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -48,7 +48,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 3`] = `
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 3`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -58,7 +58,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 4`] = `
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: assets 4`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -68,23 +68,23 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 3`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 3`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 4`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: errors 4`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 3`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 3`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 4`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache and multi compiler mode: warnings 4`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache: assets 1`] = `
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache: assets 1`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -94,7 +94,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache: assets 2`] = `
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache: assets 2`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -104,15 +104,15 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache: errors 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache: errors 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache: errors 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache: errors 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache: warnings 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache: warnings 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "filesystem" cache: warnings 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "filesystem" cache: warnings 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "memory" cache: assets 1`] = `
+exports[`CopyAdvancedPlugin cache should work with the "memory" cache: assets 1`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -122,7 +122,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "memory" cache: assets 2`] = `
+exports[`CopyAdvancedPlugin cache should work with the "memory" cache: assets 2`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -132,15 +132,15 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "memory" cache: errors 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "memory" cache: errors 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "memory" cache: errors 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "memory" cache: errors 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "memory" cache: warnings 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "memory" cache: warnings 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "memory" cache: warnings 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "memory" cache: warnings 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "transform" option: assets 1`] = `
+exports[`CopyAdvancedPlugin cache should work with the "transform" option: assets 1`] = `
 Object {
   "new0.txt": "new",
   "new1-2.txt": "newadded1",
@@ -153,7 +153,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "transform" option: assets 2`] = `
+exports[`CopyAdvancedPlugin cache should work with the "transform" option: assets 2`] = `
 Object {
   "new0.txt": "new",
   "new1-2.txt": "newadded1",
@@ -166,15 +166,15 @@ Object {
 }
 `;
 
-exports[`CopyPlugin cache should work with the "transform" option: errors 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "transform" option: errors 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "transform" option: errors 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "transform" option: errors 2`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "transform" option: warnings 1`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "transform" option: warnings 1`] = `Array []`;
 
-exports[`CopyPlugin cache should work with the "transform" option: warnings 2`] = `Array []`;
+exports[`CopyAdvancedPlugin cache should work with the "transform" option: warnings 2`] = `Array []`;
 
-exports[`CopyPlugin logging should logging when "from" is a directory: logs 1`] = `
+exports[`CopyAdvancedPlugin logging should logging when "from" is a directory: logs 1`] = `
 Object {
   "logs": Array [
     "'to' option '.' determinated as 'dir'",
@@ -245,7 +245,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin logging should logging when "from" is a file: logs 1`] = `
+exports[`CopyAdvancedPlugin logging should logging when "from" is a file: logs 1`] = `
 Object {
   "logs": Array [
     "'to' option '.' determinated as 'dir'",
@@ -273,7 +273,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin logging should logging when "from" is a glob: logs 1`] = `
+exports[`CopyAdvancedPlugin logging should logging when "from" is a glob: logs 1`] = `
 Object {
   "logs": Array [
     "'to' option '.' determinated as 'dir'",
@@ -329,7 +329,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin logging should logging when 'to' is a function: logs 1`] = `
+exports[`CopyAdvancedPlugin logging should logging when 'to' is a function: logs 1`] = `
 Object {
   "logs": Array [
     "'to' option 'newFile.txt' determinated as 'file'",
@@ -357,7 +357,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin stats should work have assets info: assets 1`] = `
+exports[`CopyAdvancedPlugin stats should work have assets info: assets 1`] = `
 Object {
   ".dottedfile": "dottedfile contents
 ",
@@ -368,7 +368,7 @@ Object {
 }
 `;
 
-exports[`CopyPlugin stats should work have assets info: assets info 1`] = `
+exports[`CopyAdvancedPlugin stats should work have assets info: assets info 1`] = `
 Array [
   Object {
     "info": Object {
@@ -421,6 +421,6 @@ Array [
 ]
 `;
 
-exports[`CopyPlugin stats should work have assets info: errors 1`] = `Array []`;
+exports[`CopyAdvancedPlugin stats should work have assets info: errors 1`] = `Array []`;
 
-exports[`CopyPlugin stats should work have assets info: warnings 1`] = `Array []`;
+exports[`CopyAdvancedPlugin stats should work have assets info: warnings 1`] = `Array []`;
