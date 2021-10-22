@@ -1,4 +1,4 @@
-<div style="text-align: center">
+<div align="center">
   <a href="https://github.com/webpack/webpack">
     <img width="200" height="200" alt="WebPack logo"
       src="https://webpack.js.org/assets/icon-square-big.svg">
