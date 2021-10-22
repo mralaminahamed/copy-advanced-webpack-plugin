@@ -1,5 +1,5 @@
 module.exports = {
     testEnvironment: "node",
+    testTimeout: 10000,
     globalSetup: "<rootDir>/globalSetup.js",
-    timeout: 10000
 };
