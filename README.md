@@ -1197,7 +1197,7 @@ Please take a moment to read our contributing guidelines if you haven't yet done
 [deps]: https://img.shields.io/librariesio/github/mralaminahamed/copy-advanced-webpack-plugin
 [deps-url]: https://david-dm.org/mralaminahamed/copy-advanced-webpack-plugin
 [tests]: https://github.com/mralaminahamed/copy-advanced-webpack-plugin/actions/workflows/nodejs.yml/badge.svg
-[tests-url]: https://github.com/mralaminahamed/copy-advanced-webpack-plugin/actions/
+[tests-url]: https://github.com/mralaminahamed/copy-advanced-webpack-plugin/actions/workflows/nodejs.yml
 [cover]: https://codecov.io/gh/mralaminahamed/copy-advanced-webpack-plugin/branch/master/graph/badge.svg
 [cover-url]: https://codecov.io/gh/mralaminahamed/copy-advanced-webpack-plugin
 <!--[chat]: https://img.shields.io/badge/gitter-webpack%2Fwebpack-brightgreen.svg
