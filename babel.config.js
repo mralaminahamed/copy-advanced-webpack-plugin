@@ -6,14 +6,14 @@ module.exports = (api) => {
 
     return {
         presets: [
-        [
-        "@babel/preset-env",
-        {
-            targets: {
-                node: "12.13.0",
-            },
-        },
-        ],
+            [
+                "@babel/preset-env",
+                {
+                    targets: {
+                        node: "12.13.0",
+                    },
+                },
+            ],
         ],
     };
 };
