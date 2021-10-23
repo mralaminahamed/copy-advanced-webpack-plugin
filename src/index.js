@@ -103,6 +103,13 @@ class CopyAdvancedPlugin {
         return fullContentHash.slice(0, hashDigestLength);
     }
 
+    static async walk(fs, dir, done) {
+        fs.readdir(dir, (err, list) => {
+            if (err) return done(err);
+            return list;
+        });
+    }
+
     static async runPattern(
         compiler,
         compilation,
@@ -147,6 +154,8 @@ class CopyAdvancedPlugin {
         } catch (error) {
             // Nothing
         }
+
+        // console.log(stats);
 
         if (stats) {
             if (stats.isDirectory()) {
@@ -232,12 +241,26 @@ class CopyAdvancedPlugin {
         let paths;
 
         try {
+            const data = await this.walk(
+                pattern.globOptions.fs,
+                pattern.glob,
+                (message) => {
+                    console.log(message);
+                }
+            );
+
+            console.log(data);
             paths = await globby(pattern.glob, pattern.globOptions);
         } catch (error) {
             compilation.errors.push(error);
 
             return;
         }
+
+        console.log("path");
+        console.log(paths);
+        console.log("pattern");
+        console.log(pattern);
 
         if (paths.length === 0) {
             if (pattern.noErrorOnMissing) {
@@ -618,10 +641,18 @@ class CopyAdvancedPlugin {
         const pluginFullName        = 'copy-advanced-webpack-plugin';
         const limit                 = Limit(this.options.concurrency || 100);
 
+        compiler.hooks.assetEmitted.tap(pluginName, (file, info) => {
+            console.log(file);
+            // console.log(info.source);
+            console.log(info.outputPath);
+            console.log(info.targetPath);
+        });
+
         compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
             const logger = compilation.getLogger(pluginFullName);
             const cache = compilation.getCache(pluginWebpackName);
 
+<<<<<<< Updated upstream
 
             compiler.hooks.assetEmitted.tap(
                 pluginName,
@@ -645,8 +676,15 @@ class CopyAdvancedPlugin {
                 {
                     name: pluginFullName,
                     stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+=======
+            compilation.hooks.afterProcessAssets.tap(
+                {
+                    name: pluginFullName,
+                    stage: compiler.webpack.Compilation
+                        .PROCESS_ASSETS_STAGE_SUMMARIZE,
+>>>>>>> Stashed changes
                 },
-                async (unusedAssets, callback) => {
+                async () => {
                     logger.log("starting to add additional assets...");
 
                     const assetMap = new Map();
@@ -844,8 +882,11 @@ class CopyAdvancedPlugin {
                         });
 
                     logger.log("finished to adding additional assets");
+<<<<<<< Updated upstream
 
                     callback();
+=======
+>>>>>>> Stashed changes
                 }
             );
 
