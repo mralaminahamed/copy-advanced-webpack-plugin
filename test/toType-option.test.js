@@ -45,7 +45,7 @@ describe("toType option", () => {
             patterns: [
             {
                 from: "directory/directoryfile.*",
-                /*https://survivejs.com/webpack/optimizing/adding-hashes-to-filenames/*/
+                /* https://survivejs.com/webpack/optimizing/adding-hashes-to-filenames/ */
                 to: "[path][base]-new-[name][ext].[contenthash].[fullhash][ext]",
                 toType: "template",
             },
