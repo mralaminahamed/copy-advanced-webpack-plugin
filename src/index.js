@@ -719,29 +719,25 @@ export default class CopyAdvancedPlugin {
             const logger = compilation.getLogger(pluginFullName);
             const cache = compilation.getCache(pluginWebpackName);
 
-
-            compiler.hooks.assetEmitted.tap(
-                pluginName,
-                (file, { content, source, outputPath, compilation, targetPath }) => {
-                    if(/css/.test(file)){
-                        console.log('css file found')
-                        console.log(file); // <Buffer 66 6f 6f 62 61 72>
-                        console.log('output path: ' + outputPath); // <Buffer 66 6f 6f 62 61 72>
-                        console.log('target path: ' + targetPath); // <Buffer 66 6f 6f 62 61 72>
-                    }
-
-                    console.log('filename: ' + file); // <Buffer 66 6f 6f 62 61 72>
-                    console.log(content); // <Buffer 66 6f 6f 62 61 72>
-                    console.log('output path: ' + outputPath); // <Buffer 66 6f 6f 62 61 72>
-                    console.log('target path: ' + targetPath); // <Buffer 66 6f 6f 62 61 72>
+            compiler.hooks.assetEmitted.tap(pluginName, (file, info) => {
+                if (/css/.test(file)) {
+                    console.log("css file found");
+                    console.log(file);
+                    console.log(`output path: ${info.outputPath}`);
+                    console.log(`target path: ${info.targetPath}`);
                 }
-            );
 
+                console.log(`filename: ${file}`);
+                console.log(info);
+                console.log(`output path: ${info.outputPath}`);
+                console.log(`target path: ${info.targetPath}`);
+            });
 
             compilation.hooks.processAssets.tapAsync(
                 {
                     name: pluginFullName,
-                    stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL,
+                    stage: compiler.webpack.Compilation
+                        .PROCESS_ASSETS_STAGE_ADDITIONAL,
                 },
                 async () => {
                     logger.log("starting to add additional assets...");
@@ -982,9 +978,6 @@ export default class CopyAdvancedPlugin {
                             );
                         });
                     logger.log("finished to adding additional assets");
-                    callback();
-=======
->>>>>>> Stashed changes
                 }
             );
 
