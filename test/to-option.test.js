@@ -493,8 +493,8 @@ describe("to option", () => {
         it('should copy files using "path", "name", "contenthash" and "ext"', (done) => {
             runEmit({
                 expectedAssetKeys: [
-                    // "newdirectory/.dottedfile-5e294e",
-                    "newdirectory/.dottedfile-69005a",
+                    "newdirectory/.dottedfile-5e294e",
+                    // "newdirectory/.dottedfile-69005a",
                     "newdirectory/directoryfile-5d7817.txt",
                     "newdirectory/nested/deep-nested/deepnested-31d6cf.txt",
                     "newdirectory/nested/nestedfile-31d6cf.txt",
@@ -1001,13 +1001,14 @@ describe("to option", () => {
     it("should process template string", (done) => {
         runEmit({
             expectedAssetKeys: [
-                // "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e.txt--[unknown]",
-                "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.54e656fc192c3dc437aa.txt--[unknown]",
+                "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e.txt--[unknown]",
+                // "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.54e656fc192c3dc437aa.txt--[unknown]",
             ],
             patterns: [
                 {
                     from: "directory/directoryfile.*",
                     to: "[path][base]-new-[name][ext].[contenthash].[fullhash][ext]--[unknown]",
+                    // to: "[path][base]-new-[name][ext].[contenthash].[fullhash][ext]--[unknown]",
                 },
             ],
         })

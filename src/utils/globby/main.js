@@ -1,12 +1,15 @@
 // https://github.com/sindresorhus/globby
 
-import fs from "node:fs";
+import fs from "fs";
+
+import fastGlob from "fast-glob";
+
 import arrayUnion from "../array-union";
 import merge2 from "../merge2";
-import fastGlob from "fast-glob";
 import dirGlob from "../dir-glob";
-import { isGitIgnored, isGitIgnoredSync } from "./gitignore.js";
-import { FilterStream, UniqueStream } from "./stream-utils.js";
+
+import { isGitIgnored, isGitIgnoredSync } from "./gitignore";
+import { FilterStream, UniqueStream } from "./stream-utils";
 
 const DEFAULT_FILTER = () => false;
 
@@ -26,7 +29,7 @@ const checkCwdOption = (options = {}) => {
     let stat;
     try {
         stat = fs.statSync(options.cwd);
-    } catch {
+    } catch (e) {
         return;
     }
 
@@ -38,12 +41,14 @@ const checkCwdOption = (options = {}) => {
 const getPathString = (p) => (p.stats instanceof fs.Stats ? p.path : p);
 
 export const generateGlobTasks = (patterns, taskOptions) => {
+    // eslint-disable-next-line no-param-reassign
     patterns = arrayUnion([patterns].flat());
     assertPatternsInput(patterns);
     checkCwdOption(taskOptions);
 
     const globTasks = [];
 
+    // eslint-disable-next-line no-param-reassign
     taskOptions = {
         ignore: [],
         expandDirectories: true,
@@ -52,12 +57,15 @@ export const generateGlobTasks = (patterns, taskOptions) => {
 
     for (const [index, pattern] of patterns.entries()) {
         if (isNegative(pattern)) {
+            // eslint-disable-next-line no-continue
             continue;
         }
 
         const ignore = patterns
             .slice(index)
+            // eslint-disable-next-line no-shadow
             .filter((pattern) => isNegative(pattern))
+            // eslint-disable-next-line no-shadow
             .map((pattern) => pattern.slice(1));
 
         const options = {
@@ -212,4 +220,4 @@ export const isDynamicPattern = (patterns, options) =>
         .flat()
         .some((pattern) => fastGlob.isDynamicPattern(pattern, options));
 
-export { isGitIgnored, isGitIgnoredSync } from "./gitignore.js";
+export { isGitIgnored, isGitIgnoredSync } from "./gitignore";

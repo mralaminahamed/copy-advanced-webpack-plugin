@@ -145,12 +145,12 @@ describe("transformAll option", () => {
     it("should interpolate [fullhash] and [contenthash]", (done) => {
         runEmit({
             expectedAssetKeys: [
-                // "4333a40fa67dfaaaefc9-47e8bdc316eff74b2d6e-file.txt",
-                "4333a40fa67dfaaaefc9-54e656fc192c3dc437aa-file.txt",
+                "4333a40fa67dfaaaefc9-47e8bdc316eff74b2d6e-file.txt",
+                // "4333a40fa67dfaaaefc9-54e656fc192c3dc437aa-file.txt",
             ],
             expectedAssetContent: {
-                // "4333a40fa67dfaaaefc9-47e8bdc316eff74b2d6e-file.txt":
-                "4333a40fa67dfaaaefc9-54e656fc192c3dc437aa-file.txt":
+                "4333a40fa67dfaaaefc9-47e8bdc316eff74b2d6e-file.txt":
+                    // "4333a40fa67dfaaaefc9-54e656fc192c3dc437aa-file.txt":
                     "::special::new::::::::::new::::::new::",
             },
             patterns: [

@@ -40,8 +40,8 @@ describe("toType option", () => {
     it("should copy a file to a new directory", (done) => {
         runEmit({
             expectedAssetKeys: [
-                // "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e.txt",
-                "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.54e656fc192c3dc437aa.txt",
+                "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.47e8bdc316eff74b2d6e.txt",
+                // "directory/directoryfile.txt-new-directoryfile.txt.5d7817ed5bc246756d73.54e656fc192c3dc437aa.txt",
             ],
             patterns: [
                 {

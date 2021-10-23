@@ -516,9 +516,6 @@ describe("CopyAdvancedPlugin", () => {
                         path.join(FIXTURES_DIR, "directory")
                     );
 
-                    console.log(contextDependencies);
-                    console.log(isIncludeDependency);
-
                     expect(isIncludeDependency).toBe(false);
                 })
                 .then(done)
