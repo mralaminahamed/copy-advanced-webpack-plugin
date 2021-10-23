@@ -1,7 +1,7 @@
-'use strict';
-const Queue = require('./queue');
+import Queue from './queue';
 
-const limit = concurrency => {
+export default function limit(concurrency)
+{
     if (!((Number.isInteger(concurrency) || concurrency === Infinity) && concurrency > 0)) {
         throw new TypeError('Expected `concurrency` to be a number from 1 and up');
     }
@@ -10,6 +10,7 @@ const limit = concurrency => {
     let activeCount = 0;
 
     const next = () => {
+        // eslint-disable-next-line no-plusplus
         activeCount--;
 
         if (queue.size > 0) {
@@ -18,6 +19,7 @@ const limit = concurrency => {
     };
 
     const run = async(fn, resolve, ...args) => {
+        // eslint-disable-next-line no-plusplus
         activeCount++;
 
         const result = (async() => fn(...args))();
@@ -26,8 +28,10 @@ const limit = concurrency => {
 
         try {
             await result;
-        } catch {}
-
+        } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e)
+        }
         next();
     };
 
@@ -67,5 +71,3 @@ const limit = concurrency => {
 
     return generator;
 };
-
-module.exports = limit;

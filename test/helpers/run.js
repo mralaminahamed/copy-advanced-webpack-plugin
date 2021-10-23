@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-import CopyPlugin from "../../src/index";
+import CopyAdvancedPlugin from "../../src/index";
 
 import ChildCompilerPlugin from "./ChildCompiler";
 import PreCopyPlugin from "./PreCopyPlugin";
@@ -23,138 +23,141 @@ const ignore = [
   "**/watch/**/*",
 ];
 
-function run(opts) {
-  return new Promise((resolve, reject) => {
-    if (Array.isArray(opts.patterns)) {
-      opts.patterns.forEach((pattern) => {
-        if (pattern.context) {
-          // eslint-disable-next-line no-param-reassign
-          pattern.context = removeIllegalCharacterForWindows(pattern.context);
+function run(opts)
+{
+    return new Promise((resolve, reject) => {
+        if (Array.isArray(opts.patterns)) {
+            opts.patterns.forEach((pattern) => {
+                if (pattern.context) {
+                  // eslint-disable-next-line no-param-reassign
+                    pattern.context = removeIllegalCharacterForWindows(pattern.context);
+                }
+
+                if (typeof pattern !== "string") {
+                    if (!opts.symlink || isWin) {
+                        pattern.globOptions = pattern.globOptions || {};
+                        pattern.globOptions.ignore = [
+                        ...ignore,
+                        ...(pattern.globOptions.ignore || []),
+                        ];
+                    }
+                }
+            });
         }
 
-        if (typeof pattern !== "string") {
-          if (!opts.symlink || isWin) {
-            pattern.globOptions = pattern.globOptions || {};
-            pattern.globOptions.ignore = [
-              ...ignore,
-              ...(pattern.globOptions.ignore || []),
-            ];
-          }
+        const compiler = opts.compiler || getCompiler();
+
+        if (opts.preCopy) {
+            new PreCopyPlugin({ options: opts.preCopy }).apply(compiler);
         }
-      });
-    }
 
-    const compiler = opts.compiler || getCompiler();
+        if (opts.breakContenthash) {
+            new BreakContenthashPlugin({ options: opts.breakContenthash }).apply(
+                compiler
+            );
+        }
 
-    if (opts.preCopy) {
-      new PreCopyPlugin({ options: opts.preCopy }).apply(compiler);
-    }
-
-    if (opts.breakContenthash) {
-      new BreakContenthashPlugin({ options: opts.breakContenthash }).apply(
-        compiler
-      );
-    }
-
-    new CopyPlugin({ patterns: opts.patterns, options: opts.options }).apply(
-      compiler
-    );
+        new CopyAdvancedPlugin({ patterns: opts.patterns, options: opts.options }).apply(
+            compiler
+        );
 
     if (opts.withChildCompilation) {
-      new ChildCompilerPlugin().apply(compiler);
+        new ChildCompilerPlugin().apply(compiler);
     }
 
     // Execute the functions in series
     return compile(compiler)
       .then(({ stats }) => {
-        const { compilation } = stats;
+            const { compilation } = stats;
 
-        if (opts.expectedErrors) {
-          expect(compilation.errors).toEqual(opts.expectedErrors);
-        } else if (compilation.errors.length > 0) {
-          throw compilation.errors[0];
-        }
+            if (opts.expectedErrors) {
+                expect(compilation.errors).toEqual(opts.expectedErrors);
+            } else if (compilation.errors.length > 0) {
+                throw compilation.errors[0];
+            }
 
-        if (opts.expectedWarnings) {
-          expect(compilation.warnings).toEqual(opts.expectedWarnings);
-        } else if (compilation.warnings.length > 0) {
-          throw compilation.warnings[0];
-        }
+            if (opts.expectedWarnings) {
+                expect(compilation.warnings).toEqual(opts.expectedWarnings);
+            } else if (compilation.warnings.length > 0) {
+                throw compilation.warnings[0];
+            }
 
-        const enryPoint = path.resolve(__dirname, "enter.js");
+            const entryPoint = path.resolve(__dirname, "enter.js");
 
-        if (compilation.fileDependencies.has(enryPoint)) {
-          compilation.fileDependencies.delete(enryPoint);
-        }
+            if (compilation.fileDependencies.has(entryPoint)) {
+                compilation.fileDependencies.delete(entryPoint);
+            }
 
-        resolve({ compilation, compiler, stats });
-      })
+            resolve({ compilation, compiler, stats });
+        })
       .catch(reject);
-  });
+    });
 }
 
-function runEmit(opts) {
-  return run(opts).then(({ compilation, compiler, stats }) => {
-    if (opts.skipAssetsTesting) {
-      return;
-    }
-
-    if (opts.expectedAssetKeys && opts.expectedAssetKeys.length > 0) {
-      expect(
-        Object.keys(compilation.assets)
-          .filter((a) => a !== "main.js")
-          .sort()
-      ).toEqual(
-        opts.expectedAssetKeys.sort().map(removeIllegalCharacterForWindows)
-      );
-    } else {
-      // eslint-disable-next-line no-param-reassign
-      delete compilation.assets["main.js"];
-      expect(compilation.assets).toEqual({});
-    }
-
-    if (opts.expectedAssetContent) {
-      // eslint-disable-next-line guard-for-in
-      for (const assetName in opts.expectedAssetContent) {
-        expect(compilation.assets[assetName]).toBeDefined();
-
-        if (compilation.assets[assetName]) {
-          let expectedContent = opts.expectedAssetContent[assetName];
-          let compiledContent = readAssets(compiler, stats)[assetName];
-
-          if (!Buffer.isBuffer(expectedContent)) {
-            expectedContent = Buffer.from(expectedContent);
-          }
-
-          if (!Buffer.isBuffer(compiledContent)) {
-            compiledContent = Buffer.from(compiledContent);
-          }
-
-          expect(Buffer.compare(expectedContent, compiledContent)).toBe(0);
+function runEmit(opts)
+{
+    return run(opts).then(({ compilation, compiler, stats }) => {
+        if (opts.skipAssetsTesting) {
+            return;
         }
-      }
-    }
-  });
+
+        if (opts.expectedAssetKeys && opts.expectedAssetKeys.length > 0) {
+            expect(
+                Object.keys(compilation.assets)
+                .filter((a) => a !== "main.js")
+                .sort()
+            ).toEqual(
+                opts.expectedAssetKeys.sort().map(removeIllegalCharacterForWindows)
+            );
+        } else {
+          // eslint-disable-next-line no-param-reassign
+            delete compilation.assets["main.js"];
+            expect(compilation.assets).toEqual({});
+        }
+
+        if (opts.expectedAssetContent) {
+          // eslint-disable-next-line guard-for-in
+            for (const assetName in opts.expectedAssetContent) {
+                expect(compilation.assets[assetName]).toBeDefined();
+
+                if (compilation.assets[assetName]) {
+                    let expectedContent = opts.expectedAssetContent[assetName];
+                    let compiledContent = readAssets(compiler, stats)[assetName];
+
+                    if (!Buffer.isBuffer(expectedContent)) {
+                        expectedContent = Buffer.from(expectedContent);
+                    }
+
+                    if (!Buffer.isBuffer(compiledContent)) {
+                        compiledContent = Buffer.from(compiledContent);
+                    }
+
+                    expect(Buffer.compare(expectedContent, compiledContent)).toBe(0);
+                }
+            }
+        }
+    });
 }
 
-function runForce(opts) {
+function runForce(opts)
+{
   // eslint-disable-next-line no-param-reassign
-  opts.compiler = getCompiler();
+    opts.compiler = getCompiler();
+    new PreCopyPlugin({ options: opts }).apply(opts.compiler);
 
-  new PreCopyPlugin({ options: opts }).apply(opts.compiler);
-
-  return runEmit(opts).then(() => {});
+    return runEmit(opts).then(() => {});
 }
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function runChange(opts) {
-  return new Promise(async (resolve) => {
-    const compiler = getCompiler();
+function runChange(opts)
+{
+    return new Promise(async(resolve) => {
+        const compiler = getCompiler();
 
-    new CopyPlugin({ patterns: opts.patterns, options: opts.options }).apply(
-      compiler
-    );
+        new CopyAdvancedPlugin({ patterns: opts.patterns, options: opts.options }).apply(
+            compiler
+        );
 
     // Create two test files
     fs.writeFileSync(opts.newFileLoc1, "file1contents");
@@ -163,12 +166,12 @@ function runChange(opts) {
     const arrayOfStats = [];
 
     const watching = compiler.watch({}, (error, stats) => {
-      if (error || stats.hasErrors()) {
-        throw error;
-      }
+        if (error || stats.hasErrors()) {
+            throw error;
+        }
 
-      arrayOfStats.push(stats);
-    });
+        arrayOfStats.push(stats);
+      });
 
     await delay(500);
 
@@ -177,37 +180,37 @@ function runChange(opts) {
     await delay(500);
 
     watching.close(() => {
-      const assetsBefore = readAssets(compiler, arrayOfStats[0]);
-      const assetsAfter = readAssets(compiler, arrayOfStats.pop());
-      const filesForCompare = Object.keys(assetsBefore);
-      const changedFiles = [];
+        const assetsBefore = readAssets(compiler, arrayOfStats[0]);
+        const assetsAfter = readAssets(compiler, arrayOfStats.pop());
+        const filesForCompare = Object.keys(assetsBefore);
+        const changedFiles = [];
 
-      filesForCompare.forEach((file) => {
-        if (assetsBefore[file] === assetsAfter[file]) {
-          changedFiles.push(file);
-        }
-      });
+        filesForCompare.forEach((file) => {
+            if (assetsBefore[file] === assetsAfter[file]) {
+                changedFiles.push(file);
+            }
+        });
 
       const lastFiles = Object.keys(assetsAfter);
 
-      if (
+    if (
         opts.expectedAssetKeys &&
         opts.expectedAssetKeys.length > 0 &&
         changedFiles.length > 0
       ) {
         expect(lastFiles.sort()).toEqual(
-          opts.expectedAssetKeys.sort().map(removeIllegalCharacterForWindows)
+            opts.expectedAssetKeys.sort().map(removeIllegalCharacterForWindows)
         );
-      } else {
+    } else {
         expect(lastFiles).toEqual({});
-      }
+    }
 
       resolve(watching);
     });
-  }).then(() => {
-    fs.unlinkSync(opts.newFileLoc1);
-    fs.unlinkSync(opts.newFileLoc2);
-  });
+    }).then(() => {
+        fs.unlinkSync(opts.newFileLoc1);
+        fs.unlinkSync(opts.newFileLoc2);
+    });
 }
 
 export { run, runChange, runEmit, runForce };

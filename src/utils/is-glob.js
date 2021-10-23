@@ -5,18 +5,19 @@
  * Released under the MIT License.
  */
 
-const isExtGlob = require('./is-extglob');
+import isExtGlob from './is-ext-glob';
+
 const chars = {'{': '}', '(': ')', '[': ']'};
 const strictRegex = /\\(.)|(^!|\*|[\].+)]\?|\[[^\\\]]+\]|\{[^\\}]+\}|\(\?[:!=][^\\)]+\)|\([^|]+\|[^\\)]+\))/;
 const relaxedRegex = /\\(.)|(^!|[*?{}()[\]]|\(\?)/;
 
-module.exports = function isGlob(str, options)
+export default function isGlob(path, options)
 {
-    if (typeof str !== 'string' || str === '') {
+    if (typeof path !== 'string' || path === '') {
         return false;
     }
 
-    if (isExtGlob(str)) {
+    if (isExtGlob(path)) {
         return true;
     }
 
@@ -28,7 +29,8 @@ module.exports = function isGlob(str, options)
         regex = relaxedRegex;
     }
 
-    while ((match = regex.exec(str))) {
+    // eslint-disable-next-line no-cond-assign
+    while ((match = regex.exec(path))) {
         if (match[2]) {
             return true;
         }
@@ -36,16 +38,18 @@ module.exports = function isGlob(str, options)
 
         // if an open bracket/brace/paren is escaped,
         // set the index to the next closing character
+        // eslint-disable-next-line prefer-destructuring
         const open = match[1];
         const close = open ? chars[open] : null;
         if (open && close) {
-            const n = str.indexOf(close, idx);
+            const n = path.indexOf(close, idx);
             if (n !== -1) {
                 idx = n + 1;
             }
         }
 
-        str = str.slice(idx);
+        // eslint-disable-next-line no-param-reassign
+        path = path.slice(idx);
     }
     return false;
 };

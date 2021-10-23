@@ -4,19 +4,17 @@ Copyrights licensed under the New BSD License.
 See the accompanying LICENSE file for terms.
 */
 
-'use strict';
-
-const randomBytes = require('./random-bytes');
+import randomBytes from './random-bytes';
 
 // Generate an internal UID to make the regexp pattern harder to guess.
 const UID_LENGTH = 16;
 const UID = generateUID();
-const PLACE_HOLDER_REGEXP = new RegExp('(\\\\)?"@__(F|R|D|M|S|A|U|I|B|L)-' + UID + '-(\\d+)__@"', 'g');
+const PLACE_HOLDER_REGEXP = new RegExp(`(\\\\) ? "@__(F|R|D|M|S|A|U|I|B|L)-${  UID  }-(\\d+)__@"`, 'g');
 
 const IS_NATIVE_CODE_REGEXP = /\{\s*\[native code\]\s*\}/g;
 const IS_PURE_FUNCTION = /function.*?\(/;
 const IS_ARROW_FUNCTION = /.*?=>.*?/;
-const UNSAFE_CHARS_REGEXP = /[<>\/\u2028\u2029]/g;
+const UNSAFE_CHARS_REGEXP = /[<>/\u2028\u2029]/g;
 
 const RESERVED_SYMBOLS = ['*', 'async'];
 
@@ -30,13 +28,11 @@ const ESCAPED_CHARS = {
     '\u2029': '\\u2029'
 };
 
-function escapeUnsafeChars(unsafeChar)
-{
+function escapeUnsafeChars(unsafeChar) {
     return ESCAPED_CHARS[unsafeChar];
 }
 
-function generateUID()
-{
+function generateUID() {
     const bytes = randomBytes(UID_LENGTH);
     let result = '';
     for (let i = 0; i < UID_LENGTH; ++i) {
@@ -45,112 +41,111 @@ function generateUID()
     return result;
 }
 
-function deleteFunctions(obj)
-{
-    let functionKeys = [];
-    for (let key in obj) {
+function deleteFunctions(obj) {
+    const functionKeys = [];
+    for (const key in obj) {
         if (typeof obj[key] === "function") {
             functionKeys.push(key);
         }
     }
     for (let i = 0; i < functionKeys.length; i++) {
+        // eslint-disable-next-line no-param-reassign
         delete obj[functionKeys[i]];
     }
 }
 
-module.exports = function serialize(obj, options)
-{
+export default function serialize(obj, options) {
+    // eslint-disable-next-line no-unused-expressions,no-param-reassign
     options || (options = {});
 
     // Backwards-compatibility for `space` as the second argument.
     if (typeof options === 'number' || typeof options === 'string') {
+        // eslint-disable-next-line no-param-reassign
         options = {space: options};
     }
 
-    let functions = [];
-    let regexps   = [];
-    let dates     = [];
-    let maps      = [];
-    let sets      = [];
-    let arrays    = [];
-    let undefs    = [];
-    let infinities = [];
-    let bigInts = [];
-    let urls = [];
+    const functions = [];
+    const regexps = [];
+    const dates = [];
+    const maps = [];
+    const sets = [];
+    const arrays = [];
+    const undefs = [];
+    const infinities = [];
+    const bigInts = [];
+    const urls = [];
 
     // Returns placeholders for functions and regexps (identified by index)
     // which are later replaced by their string representation.
-    function replacer(key, value)
-    {
+    function replacer(key, value) {
 
         // For nested function
         if (options.ignoreFunction) {
             deleteFunctions(value);
         }
 
+        // eslint-disable-next-line no-undefined
         if (!value && value !== undefined) {
             return value;
         }
 
         // If the value is an object w/ a toJSON method, toJSON is called before
         // the replacer runs, so we use this[key] to get the non-toJSONed value.
-        let origValue = this[key];
-        let type = typeof origValue;
+        const origValue = this[key];
+        const type = typeof origValue;
 
         if (type === 'object') {
             if (origValue instanceof RegExp) {
-                return '@__R-' + UID + '-' + (regexps.push(origValue) - 1) + '__@';
+                return `@__R-${UID}-${regexps.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Date) {
-                return '@__D-' + UID + '-' + (dates.push(origValue) - 1) + '__@';
+                return `@__D-${UID}-${dates.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Map) {
-                return '@__M-' + UID + '-' + (maps.push(origValue) - 1) + '__@';
+                return `@__M-${UID}-${maps.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Set) {
-                return '@__S-' + UID + '-' + (sets.push(origValue) - 1) + '__@';
+                return `@__S-${UID}-${sets.push(origValue) - 1}__@`;
             }
 
             if (origValue instanceof Array) {
-                var isSparse = origValue.filter(function () {
-                    return true}).length !== origValue.length;
+                const isSparse = origValue.filter(() => true).length !== origValue.length;
                 if (isSparse) {
-                    return '@__A-' + UID + '-' + (arrays.push(origValue) - 1) + '__@';
+                    return `@__A-${UID}-${arrays.push(origValue) - 1}__@`;
                 }
             }
 
             if (origValue instanceof URL) {
-                return '@__L-' + UID + '-' + (urls.push(origValue) - 1) + '__@';
+                return `@__L-${UID}-${urls.push(origValue) - 1}__@`;
             }
         }
 
         if (type === 'function') {
-            return '@__F-' + UID + '-' + (functions.push(origValue) - 1) + '__@';
+            return `@__F-${UID}-${functions.push(origValue) - 1}__@`;
         }
 
         if (type === 'undefined') {
-            return '@__U-' + UID + '-' + (undefs.push(origValue) - 1) + '__@';
+            return `@__U-${UID}-${undefs.push(origValue) - 1}__@`;
         }
 
         if (type === 'number' && !isNaN(origValue) && !isFinite(origValue)) {
-            return '@__I-' + UID + '-' + (infinities.push(origValue) - 1) + '__@';
+            return `@__I-${UID}-${infinities.push(origValue) - 1}__@`;
         }
 
         if (type === 'bigint') {
-            return '@__B-' + UID + '-' + (bigInts.push(origValue) - 1) + '__@';
+            return `@__B-${UID}-${bigInts.push(origValue) - 1}__@`;
         }
 
         return value;
     }
 
-    function serializeFunc(fn)
-    {
-        let serializedFn = fn.toString();
+    function serializeFunc(fn) {
+        const serializedFn = fn.toString();
         if (IS_NATIVE_CODE_REGEXP.test(serializedFn)) {
-            throw new TypeError('Serializing native function: ' + fn.name);
+            throw new TypeError(`Serializing native function: ${fn.name}`);
         }
 
         // pure functions, example: {key: function() {}}
@@ -163,22 +158,19 @@ module.exports = function serialize(obj, options)
             return serializedFn;
         }
 
-        let argsStartsAt = serializedFn.indexOf('(');
-        let def = serializedFn.substr(0, argsStartsAt)
+        const argsStartsAt = serializedFn.indexOf('(');
+        const def = serializedFn.substr(0, argsStartsAt)
             .trim()
             .split(' ')
-            .filter(function (val) {
-                return val.length > 0 });
+            .filter((val) => val.length > 0);
 
-        let nonReservedSymbols = def.filter(function (val) {
-            return RESERVED_SYMBOLS.indexOf(val) === -1
-        });
+        const nonReservedSymbols = def.filter((val) => RESERVED_SYMBOLS.indexOf(val) === -1);
 
         // enhanced literal objects, example: {key() {}}
         if (nonReservedSymbols.length > 0) {
-            return (def.indexOf('async') > -1 ? 'async ' : '') + 'function'
-                + (def.join('').indexOf('*') > -1 ? '*' : '')
-                + serializedFn.substr(argsStartsAt);
+            return `${def.indexOf('async') > -1 ? 'async ' : ''}function${
+                def.join('').indexOf('*') > -1 ? '*' : ''
+            }${serializedFn.substr(argsStartsAt)}`;
         }
 
         // arrow functions
@@ -187,10 +179,12 @@ module.exports = function serialize(obj, options)
 
     // Check if the parameter is function
     if (options.ignoreFunction && typeof obj === "function") {
+        // eslint-disable-next-line no-param-reassign,no-undefined
         obj = undefined;
     }
     // Protects against `JSON.stringify()` returning `undefined`, by serializing
     // to the literal string: "undefined".
+    // eslint-disable-next-line no-undefined
     if (obj === undefined) {
         return String(obj);
     }
@@ -225,7 +219,7 @@ module.exports = function serialize(obj, options)
     // Replaces all occurrences of function, regexp, date, map and set placeholders in the
     // JSON string with their string representations. If the original value can
     // not be found, then `undefined` is used.
-    return str.replace(PLACE_HOLDER_REGEXP, function (match, backSlash, type, valueIndex) {
+    return str.replace(PLACE_HOLDER_REGEXP, (match, backSlash, type, valueIndex) => {
         // The placeholder may not be preceded by a backslash. This is to prevent
         // replacing things like `"a\"@__R-<UID>-0__@"` and thus outputting
         // invalid JS.
@@ -234,23 +228,23 @@ module.exports = function serialize(obj, options)
         }
 
         if (type === 'D') {
-            return "new Date(\"" + dates[valueIndex].toISOString() + "\")";
+            return `new Date("${dates[valueIndex].toISOString()}")`;
         }
 
         if (type === 'R') {
-            return "new RegExp(" + serialize(regexps[valueIndex].source) + ", \"" + regexps[valueIndex].flags + "\")";
+            return `new RegExp(${serialize(regexps[valueIndex].source)}, "${regexps[valueIndex].flags}")`;
         }
 
         if (type === 'M') {
-            return "new Map(" + serialize(Array.from(maps[valueIndex].entries()), options) + ")";
+            return `new Map(${serialize(Array.from(maps[valueIndex].entries()), options)})`;
         }
 
         if (type === 'S') {
-            return "new Set(" + serialize(Array.from(sets[valueIndex].values()), options) + ")";
+            return `new Set(${serialize(Array.from(sets[valueIndex].values()), options)})`;
         }
 
         if (type === 'A') {
-            return "Array.prototype.slice.call(" + serialize(Object.assign({ length: arrays[valueIndex].length }, arrays[valueIndex]), options) + ")";
+            return `Array.prototype.slice.call(${serialize(Object.assign({length: arrays[valueIndex].length}, arrays[valueIndex]), options)})`;
         }
 
         if (type === 'U') {
@@ -262,14 +256,14 @@ module.exports = function serialize(obj, options)
         }
 
         if (type === 'B') {
-            return "BigInt(\"" + bigInts[valueIndex] + "\")";
+            return `BigInt("${bigInts[valueIndex]}")`;
         }
 
         if (type === 'L') {
-            return "new URL(\"" + urls[valueIndex].toString() + "\")";
+            return `new URL("${urls[valueIndex].toString()}")`;
         }
 
-        let fn = functions[valueIndex];
+        const fn = functions[valueIndex];
 
         return serializeFunc(fn);
     });

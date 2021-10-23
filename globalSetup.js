@@ -20,7 +20,6 @@ module.exports = () => {
         const dir = path.dirname(file);
 
         mkdirp.sync(path.join(baseDir, dir));
-
         fs.writeFileSync(path.join(baseDir, file), specialFiles[originFile]);
     });
 };

@@ -2,14 +2,20 @@ class Node {
     constructor(value)
     {
         this.value = value;
+        // eslint-disable-next-line no-undefined
         this.next = undefined;
     }
 }
 
-class Queue {
+export default class Queue {
     constructor()
     {
         this.clear();}
+
+    get size()
+    {
+        return this._size;
+    }
 
     enqueue(value)
     {
@@ -23,6 +29,7 @@ class Queue {
             this._tail = node;
         }
 
+        // eslint-disable-next-line no-plusplus
         this._size++;
     }
 
@@ -34,20 +41,19 @@ class Queue {
         }
 
         this._head = this._head.next;
+        // eslint-disable-next-line no-plusplus
         this._size--;
+        // eslint-disable-next-line consistent-return
         return current.value;
     }
 
     clear()
     {
+        // eslint-disable-next-line no-undefined
         this._head = undefined;
+        // eslint-disable-next-line no-undefined
         this._tail = undefined;
         this._size = 0;
-    }
-
-    get size()
-    {
-        return this._size;
     }
 
     * [Symbol.iterator]() {
@@ -59,5 +65,3 @@ class Queue {
         }
     }
 }
-
-module.exports = Queue;

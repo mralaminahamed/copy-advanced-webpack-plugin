@@ -152,16 +152,10 @@ export const globby = async (patterns, options) => {
         const tasks = await Promise.all(
             globTasks.map(async (task) => {
                 const globs = await getPattern(task, dirGlob);
-                console.log("echo globs");
-                console.log(globs);
-                console.log("task maker");
-                console.log(globToTask);
                 return Promise.all(globs.map(globToTask(task)));
             })
         );
 
-        console.log("all taks");
-        console.log(tasks);
         return arrayUnion(...tasks);
     };
 
