@@ -14,11 +14,12 @@ import { globby } from "./utils/globby/main";
 import schema from "./options.json";
 import globParent from "./utils/glob-parent";
 import serialize from "./utils/serialize-javascript";
-import Limit from "./utils/limit";
 import { readFile, stat } from "./utils/promisify";
 
 // Internal variables
 const template = /\[\\*([\w:]+)\\*\]/i;
+
+const isCopied = [];
 
 export default class CopyAdvancedPlugin {
     // Any options should be passed in the constructor of your plugin,
@@ -242,15 +243,7 @@ export default class CopyAdvancedPlugin {
         let paths;
 
         try {
-            const data = await this.walk(
-                pattern.globOptions.fs,
-                pattern.glob,
-                (message) => {
-                    console.log(message);
-                }
-            );
-
-            console.log(data);
+            // console.log(data);
             paths = await globby(pattern.glob, pattern.globOptions);
         } catch (error) {
             compilation.errors.push(error);
@@ -258,10 +251,10 @@ export default class CopyAdvancedPlugin {
             return;
         }
 
-        console.log("path");
-        console.log(paths);
-        console.log("pattern");
-        console.log(pattern);
+        // console.log("path");
+        // console.log(paths);
+        // console.log("pattern");
+        // console.log(pattern);
 
         if (paths.length === 0) {
             if (pattern.noErrorOnMissing) {
@@ -702,295 +695,225 @@ export default class CopyAdvancedPlugin {
         return assets;
     }
 
-    apply(compiler) {
-        const pluginName = this.constructor.name;
-        const pluginWebpackName = "CopyAdvancedWebpackPlugin";
-        const pluginFullName = "copy-advanced-webpack-plugin";
-        const limit = Limit(this.options.concurrency || 100);
+    async run(compiler, compilation, inputPattern, index) {
+        if (!isCopied.includes(inputPattern)) {
+            isCopied.push(inputPattern);
 
-        compiler.hooks.assetEmitted.tap(pluginName, (file, info) => {
-            console.log(file);
-            // console.log(info.source);
-            console.log(info.outputPath);
-            console.log(info.targetPath);
-        });
+            // const { RawSource } = compiler.webpack.sources;
 
-        compiler.hooks.thisCompilation.tap(pluginName, (compilation) => {
-            const logger = compilation.getLogger(pluginFullName);
-            const cache = compilation.getCache(pluginWebpackName);
+            // destruct source destination from input pattern
+            const pattern =
+                typeof inputPattern === "string"
+                    ? { from: inputPattern }
+                    : { ...inputPattern };
 
-            compiler.hooks.assetEmitted.tap(pluginName, (file, info) => {
-                if (/css/.test(file)) {
-                    console.log("css file found");
-                    console.log(file);
-                    console.log(`output path: ${info.outputPath}`);
-                    console.log(`target path: ${info.targetPath}`);
+            pattern.fromOrigin = pattern.from;
+            pattern.from = path.normalize(pattern.from);
+            pattern.context =
+                typeof pattern.context === "undefined"
+                    ? compiler.context
+                    : path.isAbsolute(pattern.context)
+                    ? pattern.context
+                    : path.join(compiler.context, pattern.context);
+            if (path.isAbsolute(pattern.from)) {
+                pattern.absoluteFrom = pattern.from;
+            } else {
+                pattern.absoluteFrom = path.resolve(
+                    pattern.context,
+                    pattern.from
+                );
+            }
+
+            const { inputFileSystem } = compiler;
+            let stats;
+
+            try {
+                stats = await stat(inputFileSystem, pattern.absoluteFrom);
+            } catch (error) {
+                // Nothing
+            }
+
+            if (stats) {
+                if (stats.isDirectory()) {
+                    pattern.fromType = "dir";
+                } else if (stats.isFile()) {
+                    pattern.fromType = "file";
+                } else {
+                    pattern.fromType = "glob";
                 }
+            }
 
-                console.log(`filename: ${file}`);
-                console.log(info);
-                console.log(`output path: ${info.outputPath}`);
-                console.log(`target path: ${info.targetPath}`);
-            });
+            console.log(pattern);
+            console.log(stats);
+            console.log(isCopied);
 
-            compilation.hooks.processAssets.tapAsync(
-                {
-                    name: pluginFullName,
-                    stage: compiler.webpack.Compilation
-                        .PROCESS_ASSETS_STAGE_ADDITIONAL,
-                },
-                async () => {
-                    logger.log("starting to add additional assets...");
-                    const assetMap = new Map();
-                    await Promise.all(
-                        this.patterns.map((item, index) =>
-                            limit(async () => {
-                                let assets;
+            const filteredPaths = (
+                await Promise.all(
+                    paths.map(async (item) => {
+                        // Exclude directories
+                        if (!item.dirent.isFile()) {
+                            return false;
+                        }
 
-                                try {
-                                    assets =
-                                        await CopyAdvancedPlugin.runPattern(
-                                            compiler,
-                                            compilation,
-                                            logger,
-                                            cache,
-                                            item,
-                                            index
-                                        );
-                                } catch (error) {
-                                    compilation.errors.push(error);
-                                    return;
-                                }
+                        if (pattern.filter) {
+                            let isFiltered;
 
-                                if (assets && assets.length > 0) {
-                                    if (item.transformAll) {
-                                        if (typeof item.to === "undefined") {
-                                            compilation.errors.push(
-                                                new Error(
-                                                    `Invalid "pattern.to" for the "pattern.from": "${item.from}" and "pattern.transformAll" function . The "to" option must be specified.`
-                                                )
-                                            );
+                            try {
+                                isFiltered = await pattern.filter(item.path);
+                            } catch (error) {
+                                compilation.errors.push(error);
 
-                                            return;
-                                        }
-
-                                        assets.sort((a, b) =>
-                                            a.absoluteFilename >
-                                            b.absoluteFilename
-                                                ? 1
-                                                : a.absoluteFilename <
-                                                  b.absoluteFilename
-                                                ? -1
-                                                : 0
-                                        );
-
-                                        const mergedEtag =
-                                            assets.length === 1
-                                                ? cache.getLazyHashedEtag(
-                                                      assets[0].source.buffer()
-                                                  )
-                                                : assets.reduce(
-                                                      (
-                                                          accumulator,
-                                                          asset,
-                                                          i
-                                                      ) => {
-                                                          // eslint-disable-next-line no-param-reassign
-                                                          accumulator =
-                                                              cache.mergeEtags(
-                                                                  i === 1
-                                                                      ? cache.getLazyHashedEtag(
-                                                                            accumulator.source.buffer()
-                                                                        )
-                                                                      : accumulator,
-                                                                  cache.getLazyHashedEtag(
-                                                                      asset.source.buffer()
-                                                                  )
-                                                              );
-
-                                                          return accumulator;
-                                                      }
-                                                  );
-
-                                        const cacheKeys = `transformAll | ${serialize(
-                                            {
-                                                version,
-                                                from: item.from,
-                                                to: item.to,
-                                                transformAll: item.transformAll,
-                                            }
-                                        )}`;
-                                        const eTag =
-                                            cache.getLazyHashedEtag(mergedEtag);
-                                        const cacheItem = cache.getItemCache(
-                                            cacheKeys,
-                                            eTag
-                                        );
-                                        let transformedAsset =
-                                            await cacheItem.getPromise();
-
-                                        if (!transformedAsset) {
-                                            transformedAsset = {
-                                                filename: item.to,
-                                            };
-
-                                            try {
-                                                transformedAsset.data =
-                                                    await item.transformAll(
-                                                        assets.map((asset) => {
-                                                            return {
-                                                                data: asset.source.buffer(),
-                                                                sourceFilename:
-                                                                    asset.sourceFilename,
-                                                                absoluteFilename:
-                                                                    asset.absoluteFilename,
-                                                            };
-                                                        })
-                                                    );
-                                            } catch (error) {
-                                                compilation.errors.push(error);
-
-                                                return;
-                                            }
-
-                                            if (template.test(item.to)) {
-                                                const contentHash =
-                                                    CopyAdvancedPlugin.getContentHash(
-                                                        compiler,
-                                                        compilation,
-                                                        transformedAsset.data
-                                                    );
-
-                                                const {
-                                                    path: interpolatedFilename,
-                                                    info: assetInfo,
-                                                } = compilation.getPathWithInfo(
-                                                    normalizePath(item.to),
-                                                    {
-                                                        contentHash,
-                                                        chunk: {
-                                                            hash: contentHash,
-                                                            contentHash,
-                                                        },
-                                                    }
-                                                );
-
-                                                transformedAsset.filename =
-                                                    interpolatedFilename;
-                                                transformedAsset.info =
-                                                    assetInfo;
-                                            }
-
-                                            const { RawSource } =
-                                                compiler.webpack.sources;
-
-                                            transformedAsset.source =
-                                                new RawSource(
-                                                    transformedAsset.data
-                                                );
-                                            transformedAsset.force = item.force;
-
-                                            await cacheItem.storePromise(
-                                                transformedAsset
-                                            );
-                                        }
-
-                                        assets = [transformedAsset];
-                                    }
-
-                                    const priority = item.priority || 0;
-
-                                    if (!assetMap.has(priority)) {
-                                        assetMap.set(priority, []);
-                                    }
-
-                                    assetMap.get(priority).push(...assets);
-                                }
-                            })
-                        )
-                    );
-                    const assets = [...assetMap.entries()].sort(
-                        (a, b) => a[0] - b[0]
-                    );
-                    // Avoid writing assets inside `p-limit`, because it creates concurrency.
-                    // It could potentially lead to an error - 'Multiple assets emit different content to the same filename'
-                    assets
-                        .reduce((acc, val) => acc.concat(val[1]), [])
-                        .filter(Boolean)
-                        .forEach((asset) => {
-                            const {
-                                absoluteFilename,
-                                sourceFilename,
-                                filename,
-                                source,
-                                force,
-                            } = asset;
-
-                            const existingAsset =
-                                compilation.getAsset(filename);
-
-                            if (existingAsset) {
-                                if (force) {
-                                    const info = {
-                                        copied: true,
-                                        sourceFilename,
-                                    };
-
-                                    logger.log(
-                                        `force updating '${filename}' from '${absoluteFilename}' to compilation assets,
-                                        because it already exists...`
-                                    );
-
-                                    compilation.updateAsset(filename, source, {
-                                        ...info,
-                                        ...asset.info,
-                                    });
-
-                                    logger.log(
-                                        `force updated '${filename}' from '${absoluteFilename}' to compilation assets,
-                                        because it already exists`
-                                    );
-
-                                    return;
-                                }
-
-                                logger.log(
-                                    `skip adding '${filename}' from '${absoluteFilename}' to compilation assets,
-                                    because it already exists`
-                                );
-
-                                return;
+                                return false;
                             }
 
-                            const info = { copied: true, sourceFilename };
+                            if (!isFiltered) {
+                                logger.log(
+                                    `skip '${item.path}', because it was filtered`
+                                );
+                            }
 
-                            logger.log(
-                                `writing '${filename}' from '${absoluteFilename}' to compilation assets...`
-                            );
+                            return isFiltered ? item : false;
+                        }
 
-                            compilation.emitAsset(filename, source, {
-                                ...info,
-                                ...asset.info,
-                            });
+                        return item;
+                    })
+                )
+            ).filter((item) => item);
 
-                            logger.log(
-                                `written '${filename}' from '${absoluteFilename}' to compilation assets`
-                            );
-                        });
-                    logger.log("finished to adding additional assets");
+            if (filteredPaths.length === 0) {
+                if (pattern.noErrorOnMissing) {
+                    logger.log(
+                        `finished to process a pattern from '${pattern.from}' using '${pattern.context}' context to '${pattern.to}'`
+                    );
+
+                    return;
                 }
+
+                const missingError = new Error(
+                    `unable to locate '${pattern.glob}' glob after filtering paths`
+                );
+
+                compilation.errors.push(missingError);
+
+                return;
+            }
+            const files = await Promise.all(
+                filteredPaths.map(async (item) => {
+                    const from = item.path;
+
+                    logger.debug(`found '${from}'`);
+
+                    // `globby`/`fast-glob` return the relative path when the path contains special characters on windows
+                    const absoluteFilename = path.resolve(
+                        pattern.context,
+                        from
+                    );
+
+                    pattern.to =
+                        typeof pattern.to === "function"
+                            ? await pattern.to({
+                                  context: pattern.context,
+                                  absoluteFilename,
+                              })
+                            : path.normalize(
+                                  typeof pattern.to !== "undefined"
+                                      ? pattern.to
+                                      : ""
+                              );
+
+                    const isToDirectory =
+                        path.extname(pattern.to) === "" ||
+                        pattern.to.slice(-1) === path.sep;
+
+                    const toType = pattern.toType
+                        ? pattern.toType
+                        : template.test(pattern.to)
+                        ? "template"
+                        : isToDirectory
+                        ? "dir"
+                        : "file";
+
+                    logger.log(
+                        `'to' option '${pattern.to}' determinated as '${toType}'`
+                    );
+
+                    const relativeFrom = path.relative(
+                        pattern.context,
+                        absoluteFilename
+                    );
+                    let filename =
+                        toType === "dir"
+                            ? path.join(pattern.to, relativeFrom)
+                            : pattern.to;
+
+                    if (path.isAbsolute(filename)) {
+                        filename = path.relative(
+                            compiler.options.output.path,
+                            filename
+                        );
+                    }
+
+                    logger.log(
+                        `determined that '${from}' should write to '${filename}'`
+                    );
+
+                    const sourceFilename = normalizePath(
+                        path.relative(compiler.context, absoluteFilename)
+                    );
+
+                    return {
+                        absoluteFilename,
+                        sourceFilename,
+                        filename,
+                        toType,
+                    };
+                })
             );
 
-            if (compilation.hooks.statsPrinter) {
-                compilation.hooks.statsPrinter.tap(pluginName, (stats) => {
-                    stats.hooks.print
-                        .for("asset.info.copied")
-                        .tap(pluginFullName, (copied, { green, formatFlag }) =>
-                            // eslint-disable-next-line no-undefined
-                            copied ? green(formatFlag("copied")) : undefined
+            // console.log(stats);
+
+            // console.log(compiler);
+            // console.log(compilation);
+            // console.log(item);
+            // console.log(index);
+
+            return [compiler, compilation, inputPattern, index];
+        }
+
+        return [];
+    }
+
+    apply(compiler) {
+        const self = this;
+        const pluginName = this.constructor.name;
+        // const pluginWebpackName = "CopyAdvancedWebpackPlugin";
+        // const pluginFullName = "copy-advanced-webpack-plugin";
+        // const limit = Limit(this.options.concurrency || 100);
+
+        const { compilation } = compiler;
+
+        compiler.hooks.assetEmitted.tap(pluginName, async () => {
+            // console.log(file);
+            // // // console.log(info.source);
+            // console.log(info.outputPath);
+            // console.log(info.targetPath);
+
+            // const allAssetMap = new Map();
+            await Promise.all(
+                this.patterns.map(async (item, index) => {
+                    try {
+                        const data = await self.run(
+                            compiler,
+                            compilation,
+                            item,
+                            index
                         );
-                });
-            }
+                        console.log(data);
+                    } catch (error) {
+                        compilation.errors.push(error);
+                    }
+                })
+            );
         });
     }
 }
