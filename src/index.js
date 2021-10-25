@@ -6,7 +6,6 @@ import { validate } from "schema-utils";
 import normalizePath from "./utils/normalize-path";
 import { globby } from "./utils/globby/main";
 import schema from "./options.json";
-import globParent from "./utils/glob-parent";
 import { readFile, stat } from "./utils/promisify";
 
 // Internal variables
@@ -57,9 +56,12 @@ export default class CopyAdvancedPlugin {
     ) {
         if (!isCopied.includes(inputPattern)) {
             isCopied.push(inputPattern);
-            console.log(fileBase);
-            console.log(assetEmitted);
+
+            const { inputFileSystem } = compiler;
             const { RawSource } = compiler.webpack.sources;
+            let stats;
+            let paths;
+
             // destruct source destination from input pattern
             const pattern =
                 typeof inputPattern === "string"
@@ -82,10 +84,6 @@ export default class CopyAdvancedPlugin {
                     pattern.from
                 );
             }
-
-            const { inputFileSystem } = compiler;
-            let stats;
-            let paths;
 
             try {
                 stats = await stat(inputFileSystem, pattern.absoluteFrom);
@@ -164,6 +162,11 @@ export default class CopyAdvancedPlugin {
             } catch (error) {
                 return;
             }
+
+            console.log(paths);
+            // console.log(fileBase);
+            // console.log(inputPattern);
+            console.log(assetEmitted.targetPath);
 
             const filteredPaths = (
                 await Promise.all(
@@ -357,7 +360,7 @@ export default class CopyAdvancedPlugin {
                             );
                         } catch (error) {
                             // compilation.errors.push(error);
-                            console.log(error);
+                            // console.log(error);
                         }
                     })
                 );
