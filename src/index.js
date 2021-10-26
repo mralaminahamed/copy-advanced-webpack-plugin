@@ -62,6 +62,11 @@ export default class CopyAdvancedPlugin {
             let stats;
             let paths;
 
+            if (/${inputPattern.from}/.test(assetEmitted.targetPath)) {
+                console.log("match found");
+                console.log(assetEmitted.targetPath);
+            }
+
             // destruct source destination from input pattern
             const pattern =
                 typeof inputPattern === "string"
