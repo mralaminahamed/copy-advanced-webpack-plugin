@@ -68,7 +68,7 @@
         "del-cli": "^4.0.1",
         "eslint": "^8.0.1",
         "eslint-config-prettier": "^8.3.0",
-        "eslint-plugin-import": "^2.24.0",
+        "eslint-plugin-import": "^2.25.4",
         "file-loader": "^6.2.0",
         "husky": "^7.0.4",
         "is-gzip": "^2.0.0",
