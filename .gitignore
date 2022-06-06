@@ -18,3 +18,4 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 *.iml
+.yarn/install-state.gz
