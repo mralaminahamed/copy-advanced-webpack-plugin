@@ -20,3 +20,4 @@ Thumbs.db
 *.iml
 .yarn/install-state.gz
 yarn.lock
+yarn.lock
